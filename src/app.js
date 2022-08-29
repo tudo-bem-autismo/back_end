@@ -1,0 +1,22 @@
+'use strict';
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+const router = express.Router();
+
+//Carrega as rotas da aplicação
+const indexRoutes = require('./routes/indexRoutes');
+
+const routesGenero = require('./routes/routesGenero');
+const routesResponsavel = require('./routes/routesResponsavel');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use('/', indexRoutes);
+app.use('/genero', routesGenero);
+app.use('/responsavel', routesResponsavel);
+
+module.exports = app;

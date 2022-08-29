@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tbl_genero {
+  id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  genero      String        @db.VarChar(45)
+  sigla       String        @db.VarChar(2)
+  tbl_crianca tbl_crianca[]
+}
+
+model tbl_nivel_autismo {
+  id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nivel       String        @db.VarChar(1)
+  descricao   String        @db.VarChar(100)
+  tbl_crianca tbl_crianca[]
+}
+
+model tbl_crianca {
+  id                Int               @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nome              String            @db.VarChar(100)
+  foto              String?           @db.VarChar(150)
+  data_nascimento   DateTime          @db.Date
+  id_genero         Int               @db.UnsignedInt
+  id_nivel_autismo  Int               @db.UnsignedInt
+  id_responsavel    Int               @db.UnsignedInt
+  tbl_genero        tbl_genero        @relation(fields: [id_genero], references: [id], onUpdate: Restrict, map: "FK_Genero_Crianca")
+  tbl_nivel_autismo tbl_nivel_autismo @relation(fields: [id_nivel_autismo], references: [id], onUpdate: Restrict, map: "FK_Nivel_Autismo_Crianca")
+  tbl_responsavel   tbl_responsavel   @relation(fields: [id_responsavel], references: [id], onUpdate: Restrict, map: "FK_Responsavel_Crianca")
+
+  @@index([id_genero], map: "FK_Genero_Crianca")
+  @@index([id_nivel_autismo], map: "FK_Nivel_Autismo_Crianca")
+  @@index([id_responsavel], map: "FK_Responsavel_Crianca")
+}
+
+model tbl_responsavel {
+  id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nome        String        @db.VarChar(100)
+  telefone    String?       @db.VarChar(20)
+  email       String        @db.VarChar(200)
+  senha       String        @db.VarChar(8)
+  tbl_crianca tbl_crianca[]
+}
