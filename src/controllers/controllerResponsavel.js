@@ -4,22 +4,39 @@ exports.post = async (req, res, next) =>{
 
     if(req.body != null){
 
-        const data = req.body;
+        let data = req.body;
 
         if(data.nome != null && data.email != null && data.senha != null){
 
             if(data.nome.length <= 100 && data.email.length <= 200 &&
                 data.senha.length <= 8){
-                
-                const model = require('../model/modelResponsavel');
 
-                const result = await model.createResponsavel(data);
-        
-                if(result.id != null){
-        
-                    res.status(201).send(result);
-                }
+                const crypto = require('../config/globalFunctions');
+                const encryptedSenha = crypto.encrypt(data.senha);
+
+                if(encryptedSenha){
+
+                    data.senha = encryptedSenha;
+
+                    const model = require('../model/modelResponsavel');
+                    const result = await model.createResponsavel(data);
             
+                    if(result.id != null){
+            
+                        res.status(201).send(result);
+                    
+                    }else{
+                        res.status(500).send({
+                            message: "Não foi pssível inserir o registro."
+                        })
+                    }
+                
+                }else{
+                    res.status(500).send({
+                        message: "Não foi possível encriptar a senha."
+                    })
+                }
+                
             }else{
                 
                 res.status(400).send({
@@ -98,19 +115,34 @@ exports.put = async (req, res, next) =>{
 
                 if(responsavel){
 
-                    const result = await model.putResponsavel(parseInt(id), data);
+                    const crypto = require('../config/globalFunctions');
+                    const encryptedSenha = crypto.encrypt(data.senha);
 
-                    if(result){
+                    if(encryptedSenha){
 
-                        res.status(200).send({
-                            message: "Registro atualizado com sucesso!"
+                        data.senha = encryptedSenha;
+
+                        const result = await model.putResponsavel(parseInt(id), data);
+
+                        if(result){
+
+                            res.status(200).send({
+                                message: "Registro atualizado com sucesso!"
+                            });  
+                        
+                        }else{
+                            res.status(500).send({
+                                message: "Não foi possível atualizar o registro."
+                            })
+                        }
+                    
+                    }else{
+
+                        res.status(500).send({
+                            message: "Não foi possível encriptar a senha."
                         });
 
-                    }else{
-                        res.status(500).send({
-                            message: "Não foi possível atualizar o registro."
-                        })
-                    }
+                    }    
 
                 }else{
                     res.status(400).send({
@@ -118,7 +150,6 @@ exports.put = async (req, res, next) =>{
                     });
                 }
             
-                
             }else{
                 
                 res.status(400).send({
@@ -173,4 +204,53 @@ exports.delete = async (req, res, next) =>{
             message: "ID inválido!"
         });
     }
+}
+
+exports.login = async (req, res, next) =>{
+
+    if(req.body != null){
+        
+        const data = req.body;
+
+        if(data.email != null && data.senha != null){
+
+            const model = require('../model/modelResponsavel');
+
+            const responsavel = model.getResponsavelByEmail(data.email)
+
+            if(responsavel){
+
+                const crypto = require('../config/globalFunctions');
+                const encryptedSenha = crypto.encrypt(data.senha);
+
+                if(encryptedSenha){
+
+                    if(encryptedSenha == responsavel.senha){
+
+                        res.status(202);
+                    
+                    }else{
+
+                        res.status(406).send({
+                            message: "Senha incorreta."
+                        })
+                    }
+                }
+            
+            }else{
+
+                res.status(400).send({
+                    message: "Email não encontrado na base de dados."
+                });
+            }
+        
+        }else{
+            res.status(400).send({
+                message: "Dados inválidos"
+            });
+        }
+    }
+
+
+
 }

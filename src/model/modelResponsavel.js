@@ -33,8 +33,26 @@ const getResponsavelByid = async (id)=>{
     }else{
         return false;
     }
+}
 
+const getResponsavelByEmail = async (email) =>{
+
+    const result = await prisma.tbl_responsavel.findUnique({
+
+        where:{
+            email: email
+        }
+    });
+
+    if(result){
+
+        return await result;
     
+    }else{
+
+        return false;
+    }
+
 }
 
 const createResponsavel = async (data) =>{
@@ -105,8 +123,11 @@ const deleteResponsavel = async (id) =>{
     }
 }
 
+
+
 module.exports = {getAllResponsaveis,
                 createResponsavel,
+                getResponsavelByEmail,
                 getResponsavelByid,
                 putResponsavel,
                 deleteResponsavel}
