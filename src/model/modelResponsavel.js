@@ -5,9 +5,17 @@ const prisma = require('../prismaClient');
 
 const getAllResponsaveis = async ()=>{
 
-    const allResponsaveis = await prisma.tbl_responsavel.findMany()
+    const allResponsaveis = await prisma.tbl_responsavel.findMany();
 
-    return await allResponsaveis
+    if(allResponsaveis){
+        
+        return await allResponsaveis;
+    
+    }else{
+
+        return false;
+    }
+    
 }
 
 const getResponsavelByid = async (id)=>{
@@ -18,7 +26,15 @@ const getResponsavelByid = async (id)=>{
         }
     });
 
-    return await result
+    if(result){
+
+        return await result;
+    
+    }else{
+        return false;
+    }
+
+    
 }
 
 const createResponsavel = async (data) =>{
@@ -53,10 +69,44 @@ const putResponsavel = async (id, data) =>{
         }
     });
 
-    return queryResult;
+    console.log(queryResult);
+
+    if(queryResult.nome == data.nome &&
+        queryResult.telefone == data.telefone &&
+        queryResult.email == data.email &&
+        queryResult.senha == data.senha){
+
+        console.log(queryResult)
+
+        return true;
+
+    }else{
+
+        return false;
+    }
+}
+
+const deleteResponsavel = async (id) =>{
+
+    const queryResult = await prisma.tbl_responsavel.delete({
+       
+        where:{
+            id: id
+        }
+    });
+
+   if(queryResult.id != null){
+
+        return true;
+   
+    }else{
+
+        return false;
+    }
 }
 
 module.exports = {getAllResponsaveis,
                 createResponsavel,
                 getResponsavelByid,
-                putResponsavel}
+                putResponsavel,
+                deleteResponsavel}

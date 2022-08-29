@@ -92,19 +92,33 @@ exports.put = async (req, res, next) =>{
             if(data.nome.length <= 100 && data.email.length <= 200 &&
             data.senha.length <= 8){
             
-            
                 const model = require('../model/modelResponsavel');
-            
-                const result = await model.putResponsavel(parseInt(id), data);
 
-                if(result){
+                const responsavel = await model.getResponsavelByid(parseInt(id));
 
-                    res.status(200).send({
-                        message: "Registro atualizado com sucesso!"
+                if(responsavel){
+
+                    const result = await model.putResponsavel(parseInt(id), data);
+
+                    if(result){
+
+                        res.status(200).send({
+                            message: "Registro atualizado com sucesso!"
+                        });
+
+                    }else{
+                        res.status(500).send({
+                            message: "Não foi possível atualizar o registro."
+                        })
+                    }
+
+                }else{
+                    res.status(400).send({
+                        message: "ID não encontrado na base de dados."
                     });
-
                 }
-
+            
+                
             }else{
                 
                 res.status(400).send({
@@ -118,7 +132,45 @@ exports.put = async (req, res, next) =>{
             });
         }
     }
-    
-   
-
 };
+
+exports.delete = async (req, res, next) =>{
+
+    const id = req.params.id;
+
+    if(id != null && !isNaN(id)){
+
+        const model = require('../model/modelResponsavel');
+
+        const responsavel = await model.getResponsavelByid(parseInt(id));
+        
+        if(responsavel){
+
+            const result = await model.deleteResponsavel(parseInt(id));
+
+            if(result){
+
+                res.status(200).send({
+                    message: "Registro excluído com sucesso."
+                })
+            
+            }else{
+
+                res.status(500).send({
+                    message: "Não foi possível excluir o registro."
+                })
+            }
+        
+        }else{
+
+            res.status(400).send({
+                message: "ID não encontrado na base de dados."
+            });
+        }
+    }else{
+        
+        res.status(400).send({
+            message: "ID inválido!"
+        });
+    }
+}
