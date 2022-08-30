@@ -1,7 +1,8 @@
 'use strict';
 
-const { query } = require('express');
 const prisma = require('../prismaClient');
+
+const bodyParser = require('body-parser');
 
 const getAllResponsaveis = async ()=>{
 
@@ -40,18 +41,30 @@ const getResponsavelByEmail = async (email) =>{
     const result = await prisma.tbl_responsavel.findUnique({
 
         where:{
-            email: email
-        }
+            email: email,
+        },
     });
+
+    //console.log(result.senha)
 
     if(result){
 
-        return await result;
+        if(result.id != null){
+
+            // console.log('entrei model')
+    
+            return await result;
+        
+        }else{
+    
+            return false;
+        }
     
     }else{
 
         return false;
     }
+    
 
 }
 

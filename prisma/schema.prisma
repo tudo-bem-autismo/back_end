@@ -42,7 +42,7 @@ model tbl_responsavel {
   id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   nome        String        @db.VarChar(100)
   telefone    String?       @db.VarChar(20)
-  email       String        @db.VarChar(200)
-  senha       String        @db.VarChar(8)
+  email       String        @unique(map: "email") @db.VarChar(200)
+  senha       String        @db.VarChar(64)
   tbl_crianca tbl_crianca[]
 }

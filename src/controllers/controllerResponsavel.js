@@ -11,32 +11,44 @@ exports.post = async (req, res, next) =>{
             if(data.nome.length <= 100 && data.email.length <= 200 &&
                 data.senha.length <= 8){
 
-                const crypto = require('../config/globalFunctions');
-                const encryptedSenha = crypto.encrypt(data.senha);
+                const model = require('../model/modelResponsavel');
 
-                if(encryptedSenha){
+                const emailExists = await model.getResponsavelByEmail(data.email);
 
-                    data.senha = encryptedSenha;
+                if(!emailExists){
 
-                    const model = require('../model/modelResponsavel');
-                    const result = await model.createResponsavel(data);
-            
-                    if(result.id != null){
-            
-                        res.status(201).send(result);
+                    const crypto = require('../config/globalFunctions');
+                    const encryptedSenha = crypto.encrypt(data.senha);
+
+                    if(encryptedSenha){
+
+                        data.senha = encryptedSenha;
+
+                        const result = await model.createResponsavel(data);
+                
+                        if(result.id != null){
+                
+                            res.status(201).send(result);
+                        
+                        }else{
+                            res.status(500).send({
+                                message: "Não foi pssível inserir o registro."
+                            })
+                        }
                     
                     }else{
                         res.status(500).send({
-                            message: "Não foi pssível inserir o registro."
+                            message: "Não foi possível encriptar a senha."
                         })
                     }
-                
+
                 }else{
-                    res.status(500).send({
-                        message: "Não foi possível encriptar a senha."
-                    })
+
+                    res.status(400).send({
+                        message: "Email já cadastrado na base de dados."
+                    });
                 }
-                
+
             }else{
                 
                 res.status(400).send({
@@ -111,45 +123,61 @@ exports.put = async (req, res, next) =>{
             
                 const model = require('../model/modelResponsavel');
 
-                const responsavel = await model.getResponsavelByid(parseInt(id));
+                const emailExists = await model.getResponsavelByEmail(data.email);
 
-                if(responsavel){
+                console.log(emailExists)
 
-                    const crypto = require('../config/globalFunctions');
-                    const encryptedSenha = crypto.encrypt(data.senha);
+                if(!emailExists || emailExists.id == id){
 
-                    if(encryptedSenha){
+                    console.log('entrei')
 
-                        data.senha = encryptedSenha;
+                    const responsavel = await model.getResponsavelByid(parseInt(id));
 
-                        const result = await model.putResponsavel(parseInt(id), data);
+                    if(responsavel){
 
-                        if(result){
+                        const crypto = require('../config/globalFunctions');
+                        const encryptedSenha = crypto.encrypt(data.senha);
 
-                            res.status(200).send({
-                                message: "Registro atualizado com sucesso!"
-                            });  
+                        if(encryptedSenha){
+
+                            data.senha = encryptedSenha;
+
+                            const result = await model.putResponsavel(parseInt(id), data);
+
+                            if(result){
+
+                                res.status(200).send({
+                                    message: "Registro atualizado com sucesso!"
+                                });  
+                            
+                            }else{
+                                res.status(500).send({
+                                    message: "Não foi possível atualizar o registro."
+                                })
+                            }
                         
                         }else{
+
                             res.status(500).send({
-                                message: "Não foi possível atualizar o registro."
-                            })
-                        }
-                    
+                                message: "Não foi possível encriptar a senha."
+                            });
+
+                        }    
+
                     }else{
-
-                        res.status(500).send({
-                            message: "Não foi possível encriptar a senha."
+                        res.status(400).send({
+                            message: "ID não encontrado na base de dados."
                         });
-
-                    }    
+                    }
 
                 }else{
+
                     res.status(400).send({
-                        message: "ID não encontrado na base de dados."
+                        message: "Email já cadastrado na base de dados."
                     });
+
                 }
-            
+
             }else{
                 
                 res.status(400).send({
@@ -216,7 +244,7 @@ exports.login = async (req, res, next) =>{
 
             const model = require('../model/modelResponsavel');
 
-            const responsavel = model.getResponsavelByEmail(data.email)
+            const responsavel = await model.getResponsavelByEmail(data.email)
 
             if(responsavel){
 
@@ -225,9 +253,14 @@ exports.login = async (req, res, next) =>{
 
                 if(encryptedSenha){
 
+                    // console.log(encryptedSenha);
+                    // console.log(responsavel.senha);
+
                     if(encryptedSenha == responsavel.senha){
 
-                        res.status(202);
+                        res.status(202).send({
+                            Login: true
+                        });
                     
                     }else{
 
