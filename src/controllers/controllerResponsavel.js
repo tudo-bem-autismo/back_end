@@ -305,7 +305,8 @@ exports.login = async (req, res, next) =>{
                         if(encryptedSenha == responsavel.senha){
     
                             res.status(202).send({
-                                Login: true
+                                Login: true,
+                                id: responsavel.id
                             });
                         
                         }else{
