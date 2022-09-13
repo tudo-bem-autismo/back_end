@@ -22,9 +22,9 @@ model tbl_crianca {
   id_genero         Int               @db.UnsignedInt
   id_nivel_autismo  Int               @db.UnsignedInt
   id_responsavel    Int               @db.UnsignedInt
-  tbl_genero        tbl_genero        @relation(fields: [id_genero], references: [id], onUpdate: Restrict, map: "FK_Genero_Crianca")
-  tbl_nivel_autismo tbl_nivel_autismo @relation(fields: [id_nivel_autismo], references: [id], onUpdate: Restrict, map: "FK_Nivel_Autismo_Crianca")
-  tbl_responsavel   tbl_responsavel   @relation(fields: [id_responsavel], references: [id], onUpdate: Restrict, map: "FK_Responsavel_Crianca")
+  tbl_genero        tbl_genero        @relation(fields: [id_genero], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Genero_Crianca")
+  tbl_nivel_autismo tbl_nivel_autismo @relation(fields: [id_nivel_autismo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Nivel_Autismo_Crianca")
+  tbl_responsavel   tbl_responsavel   @relation(fields: [id_responsavel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Responsavel_Crianca")
 
   @@index([id_genero], map: "FK_Genero_Crianca")
   @@index([id_nivel_autismo], map: "FK_Nivel_Autismo_Crianca")
@@ -42,7 +42,7 @@ model tbl_responsavel {
   id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   nome        String        @db.VarChar(100)
   telefone    String?       @db.VarChar(20)
-  email       String        @unique(map: "email") @db.VarChar(200)
+  email       String        @unique(map: "email_UNIQUE") @db.VarChar(200)
   senha       String        @db.VarChar(64)
   tbl_crianca tbl_crianca[]
 }

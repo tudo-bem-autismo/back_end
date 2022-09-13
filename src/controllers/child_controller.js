@@ -3,7 +3,7 @@
 const multer = require('multer');
 const multerConfig = require('../config/multer');
 
-exports.post = (multer(multerConfig).single("file")), (req, res, next) => {
+exports.post = async (req, res, next) => {
     
     if(req.body != null){
 
@@ -15,7 +15,7 @@ exports.post = (multer(multerConfig).single("file")), (req, res, next) => {
 
                 const model = require('../models/child_model');
 
-                const result = model.createChildren(data);
+                const result = await model.createChildren(data);
                     
                 if(result.id != null){
                     
