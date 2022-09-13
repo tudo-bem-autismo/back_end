@@ -11,6 +11,7 @@ const indexRoutes = require('./routes/indexRoutes');
 
 const routesGenero = require('./routes/routesGenero');
 const routesResponsavel = require('./routes/routesResponsavel');
+const childRoute = require('./routes/child_route');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -18,5 +19,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', indexRoutes);
 app.use('/genero', routesGenero);
 app.use('/responsavel', routesResponsavel);
+app.use('/children', childRoute);
 
 module.exports = app;

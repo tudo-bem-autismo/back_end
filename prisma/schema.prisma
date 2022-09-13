@@ -14,13 +14,6 @@ model tbl_genero {
   tbl_crianca tbl_crianca[]
 }
 
-model tbl_nivel_autismo {
-  id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  nivel       String        @db.VarChar(1)
-  descricao   String        @db.VarChar(100)
-  tbl_crianca tbl_crianca[]
-}
-
 model tbl_crianca {
   id                Int               @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   nome              String            @db.VarChar(100)
@@ -36,6 +29,13 @@ model tbl_crianca {
   @@index([id_genero], map: "FK_Genero_Crianca")
   @@index([id_nivel_autismo], map: "FK_Nivel_Autismo_Crianca")
   @@index([id_responsavel], map: "FK_Responsavel_Crianca")
+}
+
+model tbl_nivel_autismo {
+  id          Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nivel       String        @db.VarChar(1)
+  descricao   String        @db.VarChar(100)
+  tbl_crianca tbl_crianca[]
 }
 
 model tbl_responsavel {
