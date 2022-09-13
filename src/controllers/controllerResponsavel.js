@@ -1,76 +1,119 @@
 'use strict';
 
+// exports.post = async (req, res, next) =>{
+
+//     try{
+
+//         if(req.body != null){
+
+//             let data = req.body;
+    
+//             if(data.nome != null && data.email != null && data.senha != null){
+    
+//                 if(data.nome.length <= 100 && data.email.length <= 200 &&
+//                     data.senha.length <= 8){
+    
+//                     const model = require('../models/modelResponsavel');
+    
+//                     const emailExists = await model.getResponsavelByEmail(data.email);
+    
+//                     if(!emailExists){
+    
+//                         const crypto = require('../config/globalFunctions');
+//                         const encryptedSenha = crypto.encrypt(data.senha);
+    
+//                         if(encryptedSenha){
+    
+//                             data.senha = encryptedSenha;
+    
+//                             const result = await model.createResponsavel(data);
+                    
+//                             if(result.id != null){
+                    
+//                                 res.status(201).send(result);
+                            
+//                             }else{
+//                                 res.status(500).send({
+//                                     message: "Não foi pssível inserir o registro."
+//                                 })
+//                             }
+                        
+//                         }else{
+//                             res.status(500).send({
+//                                 message: "Não foi possível encriptar a senha."
+//                             })
+//                         }
+    
+//                     }else{
+    
+//                         res.status(400).send({
+//                             message: "Email já cadastrado na base de dados."
+//                         });
+//                     }
+    
+//                 }else{
+                    
+//                     res.status(400).send({
+//                         message: "A quantidade máxima de caracteres foi ultrapassada."
+//                     })
+//                 }
+    
+//             }else{
+//                 res.status(400).send({
+//                     message: "Dados inválidos"
+//                 });
+//             }
+//         }
+
+//     }catch(error){
+
+//         res.status(500).send(error);
+//     }
+
+    
+// };
+
 exports.post = async (req, res, next) =>{
 
-    try{
+    const data = req.body;
 
-        if(req.body != null){
+    const prisma = require('../prismaClient');
 
-            let data = req.body;
+    prisma.tbl_responsavel.create({
+        
+        data,
+        select:{
+            id: true
+        }
     
-            if(data.nome != null && data.email != null && data.senha != null){
-    
-                if(data.nome.length <= 100 && data.email.length <= 200 &&
-                    data.senha.length <= 8){
-    
-                    const model = require('../models/modelResponsavel');
-    
-                    const emailExists = await model.getResponsavelByEmail(data.email);
-    
-                    if(!emailExists){
-    
-                        const crypto = require('../config/globalFunctions');
-                        const encryptedSenha = crypto.encrypt(data.senha);
-    
-                        if(encryptedSenha){
-    
-                            data.senha = encryptedSenha;
-    
-                            const result = await model.createResponsavel(data);
-                    
-                            if(result.id != null){
-                    
-                                res.status(201).send(result);
-                            
-                            }else{
-                                res.status(500).send({
-                                    message: "Não foi pssível inserir o registro."
-                                })
-                            }
-                        
-                        }else{
-                            res.status(500).send({
-                                message: "Não foi possível encriptar a senha."
-                            })
-                        }
-    
-                    }else{
-    
-                        res.status(400).send({
-                            message: "Email já cadastrado na base de dados."
-                        });
-                    }
-    
-                }else{
-                    
-                    res.status(400).send({
-                        message: "A quantidade máxima de caracteres foi ultrapassada."
-                    })
-                }
-    
-            }else{
-                res.status(400).send({
-                    message: "Dados inválidos"
-                });
-            }
+    }).then(
+
+        (data) =>{
+
+            res.status(200).json(data);
         }
 
-    }catch(error){
+    ).catch(
 
-        res.status(500).send(error);
-    }
+        (error) => {
 
-    
+            if(error.code == "P2002"){
+
+                res.status(500).json({message: 'Email já cadastrado na base de dados.'})
+
+            }else if(error.code == "P2000"){
+
+                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+
+            }
+
+            // console.log(error)
+
+            // res.status(500).json(error)
+        }
+    )
+
+
 };
 
 exports.get = async (req, res, next) =>{
