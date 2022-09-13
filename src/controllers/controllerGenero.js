@@ -25,7 +25,7 @@ exports.delete = (req, res, next) =>{
 
 exports.get = async (req, res, next) =>{
 
-    const model = require('../model/modelGenero')
+    const model = require('../models/modelGenero')
 
     const data = await model.getAllGeneros();
 

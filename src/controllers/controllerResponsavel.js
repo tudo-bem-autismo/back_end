@@ -13,7 +13,7 @@ exports.post = async (req, res, next) =>{
                 if(data.nome.length <= 100 && data.email.length <= 200 &&
                     data.senha.length <= 8){
     
-                    const model = require('../model/modelResponsavel');
+                    const model = require('../models/modelResponsavel');
     
                     const emailExists = await model.getResponsavelByEmail(data.email);
     
@@ -77,7 +77,7 @@ exports.get = async (req, res, next) =>{
 
     try{
 
-        const model = require('../model/modelResponsavel')
+        const model = require('../models/modelResponsavel')
 
         const data = await model.getAllResponsaveis();
 
@@ -105,7 +105,7 @@ exports.getById = async (req, res, next) =>{
 
         if(id != null && !isNaN(id)){
         
-            const model = require('../model/modelResponsavel')
+            const model = require('../models/modelResponsavel')
 
             const data = await model.getResponsavelByid(parseInt(id));
 
@@ -149,7 +149,7 @@ exports.put = async (req, res, next) =>{
                 if(data.nome.length <= 100 && data.email.length <= 200 &&
                 data.senha.length <= 8){
                 
-                    const model = require('../model/modelResponsavel');
+                    const model = require('../models/modelResponsavel');
     
                     const emailExists = await model.getResponsavelByEmail(data.email);
     
@@ -236,7 +236,7 @@ exports.delete = async (req, res, next) =>{
 
         if(id != null && !isNaN(id)){
 
-            const model = require('../model/modelResponsavel');
+            const model = require('../models/modelResponsavel');
 
             const responsavel = await model.getResponsavelByid(parseInt(id));
             
@@ -288,7 +288,7 @@ exports.login = async (req, res, next) =>{
     
             if(data.email != null && data.senha != null){
     
-                const model = require('../model/modelResponsavel');
+                const model = require('../models/modelResponsavel');
     
                 const responsavel = await model.getResponsavelByEmail(data.email)
     
