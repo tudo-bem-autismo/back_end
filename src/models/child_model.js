@@ -4,6 +4,8 @@ const prisma = require('../prismaClient');
 
 const createChildren = async (data) => {
 
+    //console.log(data.foto)
+
     const queryResult = await prisma.tbl_crianca.create({
 
         data:{
@@ -16,6 +18,11 @@ const createChildren = async (data) => {
         },
         select:{
             id: true
+        },
+        tbl_genero:{
+            connect:{
+                id: data.id_genero
+            }
         }
     });
 

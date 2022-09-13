@@ -1,13 +1,17 @@
 'use strict';
 
-const multer = require('multer');
-const multerConfig = require('../config/multer');
-
 exports.post = async (req, res, next) => {
     
     if(req.body != null){
 
         let data = req.body;
+        const foto = req.file.destination;
+
+        
+
+        data.foto = foto
+
+        console.log(data.id_genero)
 
         if(data.nome != null && data.data_nascimento != null && data.id_genero != null && data.id_nivel_autismo != null && data.id_responsavel != null){
 
