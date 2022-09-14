@@ -24,7 +24,13 @@ const createChildren = async (data) => {
 }
 
 const getAllChildren = async () => {
-    const allChildren = await prisma.tbl_crianca.findMany();
+    const allChildren = await prisma.tbl_crianca.findMany({
+           include: {
+            tbl_genero: true,
+            tbl_nivel_autismo: true,
+            tbl_responsavel: true
+           }
+    });
 
     if(allChildren){
         return await allChildren;
