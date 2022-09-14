@@ -13,7 +13,7 @@ module.exports = {
                 if(error) callback(error);
 
                 const fileName = `${hash.toString('hex')}-${file.originalname}`;
-                //console.log(fileName)
+               
                 callback(null, fileName);
             })
         },

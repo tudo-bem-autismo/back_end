@@ -5,22 +5,20 @@ exports.post = async (req, res, next) => {
     if(req.body != null){
 
         let data = req.body;
-        const foto = req.file.destination;
 
-        
-
-        data.foto = foto
-
-        console.log(data.id_genero)
+        if(req.file){
+            const foto = req.file.path;
+            data["foto"] = foto;
+        }
 
         if(data.nome != null && data.data_nascimento != null && data.id_genero != null && data.id_nivel_autismo != null && data.id_responsavel != null){
-
+           
             if(data.nome.length <= 100){
-
+                
                 const model = require('../models/child_model');
-
+                
                 const result = await model.createChildren(data);
-                    
+    
                 if(result.id != null){
                     
                     res.status(201).send(result);
