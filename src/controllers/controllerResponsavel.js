@@ -1,120 +1,120 @@
 'use strict';
 
-// exports.post = async (req, res, next) =>{
-
-//     try{
-
-//         if(req.body != null){
-
-//             let data = req.body;
-    
-//             if(data.nome != null && data.email != null && data.senha != null){
-    
-//                 if(data.nome.length <= 100 && data.email.length <= 200 &&
-//                     data.senha.length <= 8){
-    
-//                     const model = require('../models/modelResponsavel');
-    
-//                     const emailExists = await model.getResponsavelByEmail(data.email);
-    
-//                     if(!emailExists){
-    
-//                         const crypto = require('../config/globalFunctions');
-//                         const encryptedSenha = crypto.encrypt(data.senha);
-    
-//                         if(encryptedSenha){
-    
-//                             data.senha = encryptedSenha;
-    
-//                             const result = await model.createResponsavel(data);
-                    
-//                             if(result.id != null){
-                    
-//                                 res.status(201).send(result);
-                            
-//                             }else{
-//                                 res.status(500).send({
-//                                     message: "Não foi pssível inserir o registro."
-//                                 })
-//                             }
-                        
-//                         }else{
-//                             res.status(500).send({
-//                                 message: "Não foi possível encriptar a senha."
-//                             })
-//                         }
-    
-//                     }else{
-    
-//                         res.status(400).send({
-//                             message: "Email já cadastrado na base de dados."
-//                         });
-//                     }
-    
-//                 }else{
-                    
-//                     res.status(400).send({
-//                         message: "A quantidade máxima de caracteres foi ultrapassada."
-//                     })
-//                 }
-    
-//             }else{
-//                 res.status(400).send({
-//                     message: "Dados inválidos"
-//                 });
-//             }
-//         }
-
-//     }catch(error){
-
-//         res.status(500).send(error);
-//     }
-
-    
-// };
-
 exports.post = async (req, res, next) =>{
 
-    const data = req.body;
+    try{
 
-    const prisma = require('../prismaClient');
+        if(req.body != null){
 
-    prisma.tbl_responsavel.create({
-        
-        data,
-        select:{
-            id: true
-        }
+            let data = req.body;
     
-    }).then(
-
-        (data) =>{
-
-            res.status(200).json(data);
-        }
-
-    ).catch(
-
-        (error) => {
-
-            if(error.code == "P2002"){
-
-                res.status(500).json({message: 'Email já cadastrado na base de dados.'})
-
-            }else if(error.code == "P2000"){
-
-                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
-
+            if(data.nome != null && data.email != null && data.senha != null){
+    
+                if(data.nome.length <= 100 && data.email.length <= 200 &&
+                    data.senha.length <= 8){
+    
+                    const model = require('../models/modelResponsavel');
+    
+                    const emailExists = await model.getResponsavelByEmail(data.email);
+    
+                    if(!emailExists){
+    
+                        const crypto = require('../config/globalFunctions');
+                        const encryptedSenha = crypto.encrypt(data.senha);
+    
+                        if(encryptedSenha){
+    
+                            data.senha = encryptedSenha;
+    
+                            const result = await model.createResponsavel(data);
+                    
+                            if(result.id != null){
+                    
+                                res.status(201).send(result);
+                            
+                            }else{
+                                res.status(500).send({
+                                    message: "Não foi pssível inserir o registro."
+                                })
+                            }
+                        
+                        }else{
+                            res.status(500).send({
+                                message: "Não foi possível encriptar a senha."
+                            })
+                        }
+    
+                    }else{
+    
+                        res.status(400).send({
+                            message: "Email já cadastrado na base de dados."
+                        });
+                    }
+    
+                }else{
+                    
+                    res.status(400).send({
+                        message: "A quantidade máxima de caracteres foi ultrapassada."
+                    })
+                }
+    
+            }else{
+                res.status(400).send({
+                    message: "Dados inválidos"
+                });
             }
-
-            // console.log(error)
-
-            // res.status(500).json(error)
         }
-    )
 
+    }catch(error){
 
+        res.status(500).send(error);
+    }
+
+    
 };
+
+// exports.post = async (req, res, next) =>{
+
+//     const data = req.body;
+
+//     const prisma = require('../prismaClient');
+
+//     prisma.tbl_responsavel.create({
+        
+//         data,
+//         select:{
+//             id: true
+//         }
+    
+//     }).then(
+
+//         (data) =>{
+
+//             res.status(200).json(data);
+//         }
+
+//     ).catch(
+
+//         (error) => {
+
+//             if(error.code == "P2002"){
+
+//                 res.status(500).json({message: 'Email já cadastrado na base de dados.'})
+
+//             }else if(error.code == "P2000"){
+
+//                 res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+
+//             }
+
+//             // console.log(error)
+
+//             // res.status(500).json(error)
+//         }
+//     )
+
+
+// };
 
 exports.get = async (req, res, next) =>{
 
@@ -186,55 +186,55 @@ exports.put = async (req, res, next) =>{
             const data = req.body;
     
             if( id != null && !isNaN(id) && 
-                data.nome != null && data.email != null && 
-                data.senha != null){
+                data.nome != null && data.email != null){
     
-                if(data.nome.length <= 100 && data.email.length <= 200 &&
-                data.senha.length <= 8){
+                if(data.nome.length <= 100 && data.email.length <= 200){
                 
                     const model = require('../models/modelResponsavel');
     
                     const emailExists = await model.getResponsavelByEmail(data.email);
     
-                    console.log(emailExists)
-    
                     if(!emailExists || emailExists.id == id){
-    
-                        console.log('entrei')
     
                         const responsavel = await model.getResponsavelByid(parseInt(id));
     
                         if(responsavel){
-    
-                            const crypto = require('../config/globalFunctions');
-                            const encryptedSenha = crypto.encrypt(data.senha);
-    
-                            if(encryptedSenha){
-    
-                                data.senha = encryptedSenha;
-    
-                                const result = await model.putResponsavel(parseInt(id), data);
-    
-                                if(result){
-    
-                                    res.status(200).send({
-                                        message: "Registro atualizado com sucesso!"
-                                    });  
-                                
-                                }else{
-                                    res.status(500).send({
-                                        message: "Não foi possível atualizar o registro."
-                                    })
-                                }
-                            
+
+                            if(!data.senha){
+
+                                data['senha'] = responsavel.senha;
+
                             }else{
+
+                                const crypto = require('../config/globalFunctions');
+                                const encryptedSenha = crypto.encrypt(data.senha);
+        
+                                if(encryptedSenha){
+        
+                                    data.senha = encryptedSenha;
+
+                                }else{
     
+                                    res.status(500).send({
+                                        message: "Não foi possível encriptar a senha."
+                                    });
+                                }   
+                            }
+    
+                            const result = await model.putResponsavel(parseInt(id), data);
+    
+                            if(result){
+    
+                                res.status(200).send({
+                                    message: "Registro atualizado com sucesso!"
+                                });  
+                                
+                            }else{
                                 res.status(500).send({
-                                    message: "Não foi possível encriptar a senha."
-                                });
-    
-                            }    
-    
+                                    message: "Não foi possível atualizar o registro."
+                                })
+                            }
+                            
                         }else{
                             res.status(400).send({
                                 message: "ID não encontrado na base de dados."
