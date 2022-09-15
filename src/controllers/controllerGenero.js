@@ -1,37 +1,39 @@
 'use strict';
 
-// exports.post = (req, res, next) =>{
+const prisma = require('../prismaClient');
 
-//     res.status(201).send(req.body);
-// };
+exports.get = (req, res, next) =>{
 
-// exports.put = (req, res, next) =>{
+    prisma.tbl_genero.findMany()
+    .then(
 
-//     const id = req.params.id;
-//     res.status(200).send({
-//         id: id,
-//         item: req.body
-//     });
-// };
+        (data) => {
 
-// exports.delete = (req, res, next) =>{
+            res.status(200).json(data);
 
-//     const id = req.params.id;
-//     res.status(200).send({
-//         id: id,
-//         item: req.body
-//     });
-// };
+        }
+    
+    ).catch(
 
-exports.get = async (req, res, next) =>{
+        (error) => {
 
-    const model = require('../models/modelGenero')
+            const argument = error.message.split('Argument')[1]
+    
+            if(argument){
+    
+                const err = argument.split('\n')[0]
+    
+                res.status(400).json({"message" : err});
+    
+            }else{
+    
+                res.status(500).json({"message" : error});
+    
+            }   
+        }
+    )
 
-    const data = await model.getAllGeneros();
-
-    res.status(200).send(data)
-
-};
+}
 
 exports.getById = (req, res, next) =>{
 
@@ -64,4 +66,4 @@ exports.getById = (req, res, next) =>{
         }
     );
 
-};
+}

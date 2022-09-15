@@ -1,14 +1,48 @@
 'use strict';
 
-exports.get = async (req, res, next) =>{
+const prisma = require('../prismaClient');
 
-    const model = require('../models/modelNivelAutismo')
+// exports.get = async (req, res, next) =>{
 
-    const data = await model.getAllNiveis();
+//     const model = require('../models/modelNivelAutismo')
 
-    res.status(200).send(data);
+//     const data = await model.getAllNiveis();
 
-};
+//     res.status(200).send(data);
+
+// };
+
+exports.get = (req, res, next) => {
+
+    prisma.tbl_nivel_autismo.findMany()
+    .then(
+
+        (data) => {
+
+            res.status(200).json(data);
+
+        }
+    
+    ).catch(
+
+        (error) => {
+
+            const argument = error.message.split('Argument')[1]
+    
+            if(argument){
+    
+                const err = argument.split('\n')[0]
+    
+                res.status(400).json({"message" : err});
+    
+            }else{
+    
+                res.status(500).json({"message" : error});
+    
+            }   
+        }
+    )
+}
 
 exports.getById = (req, res, next) =>{
 
@@ -16,7 +50,7 @@ exports.getById = (req, res, next) =>{
 
     const id = req.params.id;
 
-    const data = prisma.tbl_nivel_autismo.findUnique({
+    prisma.tbl_nivel_autismo.findUnique({
 
         where:{
 
