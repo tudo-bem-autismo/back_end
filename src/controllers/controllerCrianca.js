@@ -7,7 +7,7 @@ exports.post = async (req, res, next) => {
         let data = req.body;
 
         if(req.file){
-            const foto = req.file.path;
+            const foto = req.file;
             data["foto"] = foto;
         }
 
