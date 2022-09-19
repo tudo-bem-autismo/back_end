@@ -22,7 +22,7 @@ app.use(express.json());
 app.use('/', indexRoutes);
 app.use('/genero', routesGenero);
 app.use('/responsavel', routesResponsavel);
-app.use('/children', childRoute);
+app.use('/crianca', childRoute);
 app.use('/nivelAutismo', routesNivelAutismo);
 
 module.exports = app;

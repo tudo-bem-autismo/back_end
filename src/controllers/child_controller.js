@@ -1,157 +1,275 @@
 'use strict';
 
-exports.post = async (req, res, next) => {
+const prisma = require('../prismaClient');
+
+exports.post = (req, res) =>{
+
+    let data = req.body;
+
+    if(req.file){
+
+        data['foto'] = req.file.path;
     
-    if(req.body != null){
-
-        let data = req.body;
-
-        if(req.file){
-            const foto = req.file.path;
-            data["foto"] = foto;
-        }
-
-        if(data.nome != null && data.data_nascimento != null && data.id_genero != null && data.id_nivel_autismo != null && data.id_responsavel != null){
-           
-            if(data.nome.length <= 100){
-                
-                const model = require('../models/child_model');
-                
-                const result = await model.createChildren(data);
-    
-                if(result.id != null){
-                    
-                    res.status(201).send(result);
-                            
-                }else{
-                    res.status(500).send({
-                        message: "Não foi pssível inserir o registro no banco de dados."
-                    })
-                }
-            }else{
-                res.status(400).send({
-                    message: "A quantidade máxima de caracteres foi ultrapassada."
-                });
-            }
-        }else{
-            res.status(400).send({
-                message: "Preencha todos os campos!"
-            });
-        }
-    }
-}
-
-exports.get = async (req, res, next) => {
-
-    const model = require('../models/child_model');
-    const data = await model.getAllChildren();
-    
-    if(data != null){
-        res.status(200).send(data);
     }else{
-        res.status(500);
+
+        data['foto'] = null
     }
+
+    prisma.tbl_crianca.create({
+
+        data:{
+            nome: data.nome,
+            foto: data.foto,
+            data_nascimento: new Date( data.data_nascimento)  ,
+            id_genero: parseInt(data.id_genero),
+            id_nivel_autismo: parseInt(data.id_nivel_autismo),
+            id_responsavel: parseInt(data.id_responsavel)
+        },
+        select:{
+            id: true
+        },
+    
+    }).then(
+
+        (crianca) => {
+
+            res.status(201).json(crianca)
+        }
+    
+    ).catch(
+
+        (error) =>{
+
+            if(error.code == 'P2003'){
+
+                res.status(400).json({message: `Chave estrangeira inválida no campo ${error.meta.field_name}`})
+            
+            }else if(error.code == "P2000"){
+    
+                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+
+            }else{
+
+                const argument = error.message.split('Argument')[1]
+
+                if(argument){
+
+                    const err = argument.split('\n')[0]
+
+                    res.status(400).json({"message" : err});
+
+                }else{
+
+                    res.status(500).json({"message" : error});
+
+                }   
+            }
+
+            console.log(error)
+        }
+    )
 }
 
-exports.getById = async (req, res, next) => {
+exports.get = (req, res) =>{
+
+    prisma.tbl_crianca.findMany({
+
+        include:{
+
+            tbl_genero: true,
+            tbl_nivel_autismo: true,
+            tbl_responsavel: true
+            
+        }
+
+    }).then(
+
+        (data) => {
+
+            res.status(200).json(data)
+        }
+    
+    ).catch(
+
+        (error) =>{
+
+            res.status(500).json({"message" : error})
+        }
+    )
+}
+
+exports.getById = (req, res) =>{
 
     const id = req.params.id;
 
-    if(id != null && !isNaN(id)){
+    prisma.tbl_crianca.findUnique({
 
-        const model = require('../models/child_model')
-        const data = await model.getChildrenById(parseInt(id));
+        where:{
 
-        if(data != null){
-            res.status(200).send(data);
-        }else{
-            res.status(500);
+            id: parseInt(id)
+
+        },
+        include:{
+
+            tbl_genero: true,
+            tbl_nivel_autismo: true,
+            tbl_responsavel: true
+
         }
-    }else{
-        res.status(400).send({
-            message: "ID inválido!"
-        });
-    }
-}
-
-exports.put = async (req, res, next) => {
-    if(req.body != null){
-
-        const id = req.params.id;
-        const data = req.body;
-
-        if(id != null && !isNaN(id) && data.nome != null && 
-           data.data_nascimento != null && 
-           data.id_genero != null && data.id_nivel_autismo != null &&
-           data.id_responsavel != null){
-
-            if(data.nome.length <= 100){
-
-                const model = require('../models/child_model');
-                const child = model.getChildrenById(parseInt(id));
-                const result = await model.updateChildren(parseInt(id), data);
-
-                if(child){
-
-                    if(result.id != null){
-
-                        res.status(200).send({
-                            message: "Registro atualizado com sucesso!"
-                        });
-
-                    }else{
-                        res.status(500).send({
-                            message: "Não foi possível atualizar o registro."
-                        });
-                    }
-                }else{
-                    res.status(400).send({
-                        message: "ID não encontrado no banco de dados."
-                    });
-                }
-            }else{
-                es.status(400).send({
-                    message: "A quantidade máxima de caracteres foi ultrapassada."
-                });
-            }
-        }else{
-            res.status(400).send({
-                message: "Dados inválidos."
-            });
-        }
-    }
-}
-
-exports.delete = async (req, res, next) => {
     
+    }).then(
+
+        (data) => {
+
+            res.status(200).json(data)
+        }
+    
+    ).catch(
+
+        (error) => {
+
+            const argument = error.message.split('Argument')[1]
+    
+            if(argument){
+
+                const err = argument.split('\n')[0]
+
+                res.status(400).json({"message" : err});
+
+            }else{
+
+                res.status(500).json({"message" : error});
+
+            }
+        }
+    )
+}
+
+exports.put = (req, res) =>{
+
+    const id = req.params.id;
+    const data = req.body;
+
+    if(req.file){
+
+        data['foto'] = req.file.path;
+    
+    }else{
+
+        data['foto'] = null
+    }
+
+    prisma.tbl_crianca.update({
+
+        where:{
+
+            id: parseInt(id)
+
+        },
+        data:{
+
+            nome: data.nome,
+            foto: data.foto,
+            data_nascimento: new Date( data.data_nascimento)  ,
+            id_genero: parseInt(data.id_genero),
+            id_nivel_autismo: parseInt(data.id_nivel_autismo),
+            id_responsavel: parseInt(data.id_responsavel)
+
+        }
+    
+    }).then(
+
+        () => {
+
+            res.status(200).json({
+                message: "Registro atualizado com sucesso!"
+            });
+
+        }
+    
+    ).catch(
+
+        (error) => {
+
+           if(error.code == "P2000"){
+
+                res.status(400).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+
+            
+            }else if(error.code == "P2025"){
+
+                res.status(400).send({message: "ID não encontrado na base de dados."});
+            
+            
+            }else if(error.code == 'P2003'){
+
+                res.status(400).json({message: `Chave estrangeira inválida no campo ${error.meta.field_name}`})
+            
+            }else{
+
+                const argument = error.message.split('Argument')[1]
+
+                if(argument){
+
+                    const err = argument.split('\n')[0]
+
+                    res.status(400).json({"message" : err});
+
+                }else{
+
+                    res.status(500).json({"message" : error});
+
+                }   
+            }
+        }
+    )
+}
+
+exports.delete = (req, res, next) =>{
+
+
     const id = req.params.id;
 
-    if(id != null && !isNaN(id)){
+    prisma.tbl_crianca.delete({
 
-        const model = require('../models/child_model');
-        const child = await model.getChildrenById(parseInt(id));
-
-        if(child){
-
-            const result = await model.deleteChildren(parseInt(id));
-
-            if(result){
-                res.status(200).send({
-                    message: "Registro excluído com sucesso!"
-                });
-            }else{
-                res.status(500).send({
-                   message: "Não foi possível excluir o registro do banco de dados." 
-                });
-            }
-        }else{
-            res.status(400).send({
-                message: "ID não encontrado no banco de dados."
-            });
+        where:{
+            
+            id: parseInt(id)
+        
         }
-    }else{
-        res.status(400).send({
-            message: "ID inválido!"
-        });
-    }
+    
+    }).then(
+
+        () => {
+
+            res.status(200).json({message: "Registro excluído com sucesso."})
+        }
+    
+    ).catch(
+
+        (error) => {
+
+            if(error.code == "P2025"){
+
+                res.status(400).send({message: "ID não encontrado na base de dados."});
+            
+            
+            }else{
+
+                const argument = error.message.split('Argument')[1]
+
+                if(argument){
+
+                    const err = argument.split('\n')[0]
+
+                    res.status(400).json({"message" : err});
+
+                }else{
+
+                    res.status(500).json({"message" : error});
+
+                }  
+            }
+        }
+    )
 }
