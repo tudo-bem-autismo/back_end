@@ -4,7 +4,10 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/child_controller')
 
-router.post('/', controller.post);
+const multer = require('multer');
+const multerConfig = require('../config/multer');
+
+router.post('/', multer(multerConfig).single("arquivo"), controller.post);
 router.get('/', controller.get);
 router.get('/:id', controller.getById);
 router.put('/:id', controller.put);
