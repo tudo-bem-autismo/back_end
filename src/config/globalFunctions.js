@@ -7,18 +7,29 @@ const password = "123456abcdefghijklmnopqrstuvwxyz";
 
 const encrypt = (data) => {
 
-    const hash = crypto.createHmac(algorithm, password);
+    if(data){
 
-    const update = hash.update(data);
-    const digest = update.digest('hex');
+        const hash = crypto.createHmac(algorithm, password);
 
-    if(digest){
+        const update = hash.update(data);
+        const digest = update.digest('hex');
 
-        return digest;
+        if(digest){
+
+            return digest;
+
+        }else{
+
+            return false;
+        }
+    
     }else{
 
         return false;
+    
     }
+
+    
 }
 
 module.exports = {encrypt};

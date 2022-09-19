@@ -2,9 +2,19 @@
 
 const prisma = require('../prismaClient');
 
-exports.get = (req, res, next) =>{
+// exports.get = async (req, res, next) =>{
 
-    prisma.tbl_genero.findMany()
+//     const model = require('../models/modelNivelAutismo')
+
+//     const data = await model.getAllNiveis();
+
+//     res.status(200).send(data);
+
+// };
+
+exports.get = (req, res, next) => {
+
+    prisma.tbl_nivel_autismo.findMany()
     .then(
 
         (data) => {
@@ -32,7 +42,6 @@ exports.get = (req, res, next) =>{
             }   
         }
     )
-
 }
 
 exports.getById = (req, res, next) =>{
@@ -41,7 +50,7 @@ exports.getById = (req, res, next) =>{
 
     const id = req.params.id;
 
-    const data = prisma.tbl_genero.findUnique({
+    prisma.tbl_nivel_autismo.findUnique({
 
         where:{
 
@@ -66,4 +75,4 @@ exports.getById = (req, res, next) =>{
         }
     );
 
-}
+};
