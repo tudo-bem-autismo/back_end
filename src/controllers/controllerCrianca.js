@@ -6,6 +6,8 @@ exports.post = (req, res) =>{
 
     let data = req.body;
 
+    return console.log(req.file);
+
     if(req.file){
 
         data['foto'] = req.file.path;
