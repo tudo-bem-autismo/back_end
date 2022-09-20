@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/child_controller')
+const controller = require('../controllers/controllerCrianca')
 
 const multer = require('multer');
 const multerConfig = require('../config/multer');
