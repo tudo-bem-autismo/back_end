@@ -4,24 +4,24 @@ const prisma = require('../prismaClient');
 
 exports.post = (req, res) =>{
 
-    let data = req.body;
+    const data = req.body;
 
-    return console.log(req.file);
+    const {firebaseUrl} = req.file ? req.file : "";
 
-    if(req.file){
+    // if(req.file){
 
-        data['foto'] = req.file.path;
+    //     data['foto'] = req.file.path;
     
-    }else{
+    // }else{
 
-        data['foto'] = null
-    }
+    //     data['foto'] = null
+    // }
 
     prisma.tbl_crianca.create({
 
         data:{
             nome: data.nome,
-            foto: data.foto,
+            foto: firebaseUrl,
             data_nascimento: new Date( data.data_nascimento)  ,
             id_genero: parseInt(data.id_genero),
             id_nivel_autismo: parseInt(data.id_nivel_autismo),
@@ -151,15 +151,16 @@ exports.put = (req, res) =>{
 
     const id = req.params.id;
     const data = req.body;
+    const {firebaseUrl} = req.file ? req.file : "";
 
-    if(req.file){
+    // if(req.file){
 
-        data['foto'] = req.file.path;
+    //     data['foto'] = req.file.path;
     
-    }else{
+    // }else{
 
-        data['foto'] = null
-    }
+    //     data['foto'] = null
+    // }
 
     prisma.tbl_crianca.update({
 
@@ -171,7 +172,7 @@ exports.put = (req, res) =>{
         data:{
 
             nome: data.nome,
-            foto: data.foto,
+            foto: firebaseUrl,
             data_nascimento: new Date( data.data_nascimento)  ,
             id_genero: parseInt(data.id_genero),
             id_nivel_autismo: parseInt(data.id_nivel_autismo),

@@ -1,4 +1,3 @@
-
 var admin = require("firebase-admin");
  
 var serviceAccount = require("../src/config/firebaseKey.json");
@@ -43,4 +42,4 @@ const uploadImage = (req, res, next) => {
     stream.end(image.buffer);
 }
 
-module.export = uploadImage;
+module.exports = uploadImage;
