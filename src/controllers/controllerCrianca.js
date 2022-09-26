@@ -8,15 +8,6 @@ exports.post = (req, res) =>{
 
     const {firebaseUrl} = req.file ? req.file : "";
 
-    // if(req.file){
-
-    //     data['foto'] = req.file.path;
-    
-    // }else{
-
-    //     data['foto'] = null
-    // }
-
     prisma.tbl_crianca.create({
 
         data:{
@@ -152,15 +143,6 @@ exports.put = (req, res) =>{
     const id = req.params.id;
     const data = req.body;
     const {firebaseUrl} = req.file ? req.file : "";
-
-    // if(req.file){
-
-    //     data['foto'] = req.file.path;
-    
-    // }else{
-
-    //     data['foto'] = null
-    // }
 
     prisma.tbl_crianca.update({
 
