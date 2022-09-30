@@ -214,7 +214,6 @@ exports.delete = (req, res, next) =>{
 
 
     const id = req.params.id;
-    const multer = require("../config/multer");
 
     prisma.tbl_crianca.delete({
 
