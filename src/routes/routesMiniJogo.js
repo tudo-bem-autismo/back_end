@@ -4,6 +4,17 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/controllerMiniJogo');
 
-router.post('/', controller.post);
+const multer = require('multer');
+// const multerConfig = require('../config/multer');
+const { memoryStorage } = require('multer');
+
+const Multer = multer({
+    storage: memoryStorage,
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
+});
+
+router.post('/', Multer.single(), controller.post);
 
 module.exports = router;
