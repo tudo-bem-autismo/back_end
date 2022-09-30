@@ -49,22 +49,12 @@ model tbl_responsavel {
 }
 
 model tbl_mini_Jogo {
-  id           Int    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  nome         String @db.VarChar(80)
-  descricao    String @db.Text
-  icone        String @db.VarChar(150)
-  imagem_fundo String @db.VarChar(150)
-}
-
-model tbl_passo {
-  id           Int    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  dialogo      String @db.VarChar(100)
-  imagem       String @db.VarChar(150)
-  ordem        Int
-  acao         String @db.VarChar(100)
-  id_mini_jogo Int    @db.UnsignedInt
-
-  @@index([id_mini_jogo], map: "FK_Mini_Jogo_Passo")
+  id           Int         @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nome         String      @db.VarChar(80)
+  descricao    String      @db.Text
+  icone        String      @db.VarChar(150)
+  imagem_fundo String      @db.VarChar(150)
+  tbl_passo    tbl_passo[]
 }
 
 model tbl_relatorio {
@@ -78,4 +68,16 @@ model tbl_relatorio {
 
   @@index([id_crianca], map: "FK_Crianca_Relatorio")
   @@index([id_mini_jogo], map: "FK_Mini_Jogo_Relatorio")
+}
+
+model tbl_passo {
+  id            Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  dialogo       String        @db.VarChar(100)
+  imagem        String        @db.VarChar(150)
+  ordem         Int
+  acao          String        @db.VarChar(100)
+  id_mini_jogo  Int           @db.UnsignedInt
+  tbl_mini_Jogo tbl_mini_Jogo @relation(fields: [id_mini_jogo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Mini_Jogo_Passo")
+
+  @@index([id_mini_jogo], map: "FK_Mini_Jogo_Passo")
 }
