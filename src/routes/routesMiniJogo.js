@@ -16,15 +16,18 @@ const Multer = multer({
     }
 });
 
-router.post('/', Multer.fields([{
-    name: 'icone',
-    maxCount: 1},{
-    name: 'imagem_fundo',
-    maxCount: 1    
-    }]), controller.post);
+// router.post('/', Multer.fields([{
+//     name: 'icone',
+//     maxCount: 1},{
+//     name: 'imagem_fundo',
+//     maxCount: 1    
+//     },{
+//     name: 'tbl_passo[*][imagem]',
+//     maxCount: 100
+//     }]), controller.post);
 
 router.get('/', controller.get)
 
-//router.post('/', Multer.single("icone"), uploadImage, controller.post);
+router.post('/', Multer.any(), controller.post);
 
 module.exports = router;
