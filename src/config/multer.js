@@ -1,16 +1,21 @@
-import { getStorage, ref, deleteObject } from "gs://tudo-bem-autismo.appspot.com";
+const test = require('@firebase/storage')
+const del = () =>{
+    const storage =  test.getStorage();
 
-const storage =  getStorage();
+    // const storageRef = ref(storage); 
+    
+    const desertRef = test.ref(storage, 'tudo-bem-autismo.appspot.com/1663787550116.jpeg');
+    
+    test.deleteObject(desertRef).then(() => {
+        console.log('jsdj')
+    }).catch((error) => {
+        console.log(error); 
+    });
+}
 
-const storageRef = ref(storage); 
 
-const desertRef = ref(storage, storageRef);
 
-deleteObject(desertRef).then(() => {
-    //Success
-}).catch((error) => {
-    console.log(error); 
-});
+module.exports = {del};
 
 /* Antigo multer */
 

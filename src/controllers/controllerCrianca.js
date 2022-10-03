@@ -1,4 +1,9 @@
 'use strict';
+// import { getStorage, ref, deleteObject } from "gs://tudo-bem-autismo.appspot.com";
+// const getStorage = require('firebase-admin')
+// getStorage.a
+
+const test = require('../../services/firebase')
 
 const prisma = require('../prismaClient');
 
@@ -19,9 +24,10 @@ exports.post = (req, res) =>{
             id_responsavel: parseInt(data.id_responsavel)
         },
         select:{
-            id: true
+            id: true,
+            foto: true
         },
-    
+  
     }).then(
 
         (crianca) => {
@@ -210,8 +216,7 @@ exports.put = (req, res) =>{
     )
 }
 
-exports.delete = (req, res, next) =>{
-
+exports.delete = async(req, res, next) =>{
 
     const id = req.params.id;
 
@@ -221,11 +226,27 @@ exports.delete = (req, res, next) =>{
             
             id: parseInt(id)
         
-        }
+        },select:{foto: true}
     
     }).then(
 
-        () => {
+        async(data) => {
+
+            
+
+            // const storage =  getStorage();
+
+            // // const storageRef = ref(storage); 
+
+            // const desertRef = ref(storage, 'https://storage.googleapis.com/tudo-bem-autismo.appspot.com/1663787550116.jpeg');
+
+            // deleteObject(desertRef).then(() => {
+            //     console.log('jsdj')
+            // }).catch((error) => {
+            //     console.log(error); 
+            // });
+
+            console.log(test.del())
 
             res.status(200).json({message: "Registro excluído com sucesso."})
         }
@@ -233,6 +254,8 @@ exports.delete = (req, res, next) =>{
     ).catch(
 
         (error) => {
+
+            console.log(error)
 
             if(error.code == "P2025"){
 
@@ -251,7 +274,7 @@ exports.delete = (req, res, next) =>{
 
                 }else{
 
-                    res.status(500).json({"message" : error});
+                    res.status(500).json({"message" : 'shdhad'});
 
                 }  
             }

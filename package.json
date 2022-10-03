@@ -3,12 +3,16 @@
     "start": "nodemon ./bin/server.js"
   },
   "dependencies": {
+    "@firebase/firestore": "^3.5.0",
+    "@firebase/storage": "^0.9.9",
     "@prisma/client": "^4.2.1",
     "body-parser": "^1.20.0",
     "crypto": "^1.0.1",
     "debug": "^4.3.4",
     "express": "^4.18.1",
+    "firebase": "^9.10.0",
     "firebase-admin": "^11.0.1",
+    "firebase-tools": "^11.13.0",
     "http": "^0.0.1-security",
     "mongoose": "^6.6.0",
     "morgan": "^1.10.0",
