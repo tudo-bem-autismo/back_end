@@ -24,10 +24,11 @@ const Multer = multer({
 //     },{
 //     name: 'tbl_passo[*][imagem]',
 //     maxCount: 100
-//     }]), controller.post);
+    // }]), controller.post);
+router.post('/', Multer.single('icone'), controller.post)
 
 router.get('/', controller.get)
 
-router.post('/', Multer.any(), controller.post);
+// router.post('/', Multer.any(), controller.post);
 
 module.exports = router;

@@ -1,87 +1,119 @@
 'use strict';
 
+const multer = require('multer');
 const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
 
+    // const Multer = multer({
+    //     storage: multer.memoryStorage(),
+    //     limits: {
+    //         fileSize: 5 * 1024 * 1024
+    //     }
+    // });
+
     const upload = require("../../services/firebase");
 
     let data = req.body;
-    const images = req.files;
-
-    const icone = upload.uploadImages(images.icone[0]);
-    const imagemFundo = upload.uploadImages(images.imagem_fundo[0]);
+    const image = req.file;
+    
+    const icone = upload.uploadImages(image);
+    console.log(icone)
     // console.log(data.tbl_passo[0]['dialogo'])
-console.log(req)
+    // console.log(images)
 
-    // data['icone'] = icone;
-    // data['imagem_fundo'] = imagemFundo;
+    data['icone'] = icone;
 
-    // prisma.tbl_mini_Jogo.create({
+    prisma.tbl_mini_jogo.create({
 
-    //     data:{
-    //         nome: data.nome,
-    //         descricao: data.descricao,
-    //         icone: data.icone,
-    //         imagem_fundo: data.imagem_fundo,
-    //         tbl_passo: {
-    //             create: [
-    //                 {dialogo: 'Qual é a correta?', imagem:'imagem_aqui.jpeg' , ordem: 1, acao: 'Abrir a torneira'},
-    //                 {dialogo: 'Qual é a correta?', imagem:'imagem_aqui.jpeg' , ordem: 1, acao: 'Abrir a torneira'},
-    //                 {dialogo: 'Qual é a correta?', imagem:'imagem_aqui.jpeg' , ordem: 1, acao: 'Abrir a torneira'},
-    //                 {dialogo: 'Qual é a correta?', imagem:'imagem_aqui.jpeg' , ordem: 1, acao: 'Abrir a torneira'}
-    //             ]
-    //         }
-    //     },
-    //     select:{
+        data,
+        select:{
 
-    //         id: true
+            id: true
 
-    //     }
+        }
     
-    // }).then(
+    }).then(
 
-    //     (data) =>{
+        (data) =>{
 
-    //         res.status(200).json(data);
-    //     }
+            res.status(200).json(data);
+        }
     
-    // ).catch(
+    ).catch(
 
-    //     (error) =>{
+        (error) =>{
 
-    //         console.log(error)
+            console.log(error)
 
-    //         if(error.code == "P2000"){
+            if(error.code == "P2000"){
 
-    //             res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
 
-    //         }else{
+            }else{
 
-    //             const argument = error.message.split('Argument')[1]
+                const argument = error.message.split('Argument')[1]
 
-    //             if(argument){
+                if(argument){
 
-    //                 const err = argument.split('\n')[0]
+                    const err = argument.split('\n')[0]
 
-    //                 res.status(400).json({"message" : err});
+                    res.status(400).json({"message" : err});
 
-    //             }else{
+                }else{
 
-    //                 res.status(500).json({"message" : error});
+                    res.status(500).json({"message" : error});
 
-    //             }   
-    //         }
-    //     }
-    // );
+                }   
+            }
+        }
+    );
 }
 
 exports.get = async (req, res, next) =>{
 
-    prisma.tbl_mini_Jogo.findMany({
+    prisma.tbl_mini_jogo.findMany({
 
         include:{
-            tbl_passo: true
+            tbl_situacao_escolha: {
+                include: {
+                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_correto: true,
+                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_errado: true
+                }
+            }
+        }
+    })
+    .then(
+
+        (data) => {
+
+            res.status(200).json(data);
+        }
+    )
+    .catch(
+
+        (error) =>{
+
+            console.log(error)
+
+            res.status(500).json({"message" : error})
+        }
+    );
+}
+
+exports.getById = async (req, res, next) =>{
+
+    const id = req.params.id
+
+    prisma.tbl_mini_jogo.findMany({
+
+        include:{
+            tbl_situacao_escolha: {
+                include: {
+                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_correto: true,
+                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_errado: true
+                }
+            }
         }
     })
     .then(

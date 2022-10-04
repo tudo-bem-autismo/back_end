@@ -24,7 +24,7 @@ model tbl_crianca {
   id_responsavel    Int               @db.UnsignedInt
   tbl_genero        tbl_genero        @relation(fields: [id_genero], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Genero_Crianca")
   tbl_nivel_autismo tbl_nivel_autismo @relation(fields: [id_nivel_autismo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Nivel_Autismo_Crianca")
-  tbl_responsavel   tbl_responsavel   @relation(fields: [id_responsavel], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Responsavel_Crianca")
+  tbl_responsavel   tbl_responsavel   @relation(fields: [id_responsavel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Responsavel_Crianca")
   tbl_relatorio     tbl_relatorio[]
 
   @@index([id_genero], map: "FK_Genero_Crianca")
@@ -48,36 +48,54 @@ model tbl_responsavel {
   tbl_crianca tbl_crianca[]
 }
 
-model tbl_mini_Jogo {
-  id           Int         @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  nome         String      @db.VarChar(80)
-  descricao    String      @db.Text
-  icone        String      @db.VarChar(150)
-  imagem_fundo String      @db.VarChar(150)
-  tbl_passo    tbl_passo[]
-}
-
 model tbl_relatorio {
-  id           Int         @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  erros        Int
-  acertos      Int
-  data         DateTime    @default(dbgenerated("(now())")) @db.DateTime(0)
-  id_mini_jogo Int         @db.UnsignedInt
-  id_crianca   Int         @db.UnsignedInt
-  tbl_crianca  tbl_crianca @relation(fields: [id_crianca], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Crianca_Relatorio")
+  id            Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  erros         Int
+  acertos       Int
+  data          DateTime      @default(dbgenerated("(now())")) @db.DateTime(0)
+  id_mini_jogo  Int           @db.UnsignedInt
+  id_crianca    Int           @db.UnsignedInt
+  tbl_crianca   tbl_crianca   @relation(fields: [id_crianca], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Crianca_Relatorio")
+  tbl_mini_jogo tbl_mini_jogo @relation(fields: [id_mini_jogo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Mini_Jogo_Relatorio")
 
   @@index([id_crianca], map: "FK_Crianca_Relatorio")
   @@index([id_mini_jogo], map: "FK_Mini_Jogo_Relatorio")
 }
 
 model tbl_passo {
-  id            Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  dialogo       String        @db.VarChar(100)
-  imagem        String        @db.VarChar(150)
-  ordem         Int
-  acao          String        @db.VarChar(100)
-  id_mini_jogo  Int           @db.UnsignedInt
-  tbl_mini_Jogo tbl_mini_Jogo @relation(fields: [id_mini_jogo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Mini_Jogo_Passo")
+  id                                                                    Int                    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  imagem                                                                String?                @db.VarChar(150)
+  texto                                                                 String?                @db.VarChar(100)
+  passo_correto                                                         Boolean
+  descricao                                                             String                 @db.VarChar(100)
+  tbl_situacao_escolha_tbl_passoTotbl_situacao_escolha_id_passo_correto tbl_situacao_escolha[] @relation("tbl_passoTotbl_situacao_escolha_id_passo_correto")
+  tbl_situacao_escolha_tbl_passoTotbl_situacao_escolha_id_passo_errado  tbl_situacao_escolha[] @relation("tbl_passoTotbl_situacao_escolha_id_passo_errado")
+}
+
+model tbl_mini_jogo {
+  id                   Int                    @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  nome                 String                 @db.VarChar(80)
+  descricao            String?                @db.Text
+  icone                String                 @db.VarChar(150)
+  tbl_relatorio        tbl_relatorio[]
+  tbl_situacao_escolha tbl_situacao_escolha[]
+}
+
+model tbl_situacao_escolha {
+  id                                                         Int           @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  ordem                                                      Int
+  dialogo                                                    String        @db.VarChar(100)
+  imagem_exemplo                                             String?       @db.VarChar(150)
+  imagem_fundo                                               String?       @db.VarChar(150)
+  cor_fundo                                                  String        @db.VarChar(10)
+  id_mini_jogo                                               Int           @db.UnsignedInt
+  id_passo_correto                                           Int           @db.UnsignedInt
+  id_passo_errado                                            Int           @db.UnsignedInt
+  tbl_mini_jogo                                              tbl_mini_jogo @relation(fields: [id_mini_jogo], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Mini_Jogo_Passo")
+  tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_correto tbl_passo     @relation("tbl_passoTotbl_situacao_escolha_id_passo_correto", fields: [id_passo_correto], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Passo_Correto_Situacao_Escolha")
+  tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_errado  tbl_passo     @relation("tbl_passoTotbl_situacao_escolha_id_passo_errado", fields: [id_passo_errado], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Passo_Errado_Situacao_Escolha")
 
   @@index([id_mini_jogo], map: "FK_Mini_Jogo_Passo")
+  @@index([id_passo_correto], map: "FK_Passo_Correto_Situacao_Escolha")
+  @@index([id_passo_errado], map: "FK_Passo_Errado_Situacao_Escolha")
 }
