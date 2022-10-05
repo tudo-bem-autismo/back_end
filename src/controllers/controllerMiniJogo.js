@@ -107,6 +107,11 @@ exports.getById = async (req, res, next) =>{
 
     prisma.tbl_mini_jogo.findMany({
 
+        where: {
+
+            id: parseInt(id)
+
+        } ,
         include:{
             tbl_situacao_escolha: {
                 include: {
@@ -127,9 +132,26 @@ exports.getById = async (req, res, next) =>{
 
         (error) =>{
 
-            console.log(error)
-
-            res.status(500).json({"message" : error})
+            if(error.code == "P2000"){
+    
+                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
+    
+            }else{
+    
+                const argument = error.message.split('Argument')[1]
+    
+                if(argument){
+    
+                    const err = argument.split('\n')[0]
+                    
+                    res.status(400).json({"message" : err});
+    
+                }else{
+    
+                    res.status(500).json({"message" : error});
+    
+                }   
+            }
         }
     );
 }
