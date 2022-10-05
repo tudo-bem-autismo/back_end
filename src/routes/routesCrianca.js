@@ -14,7 +14,7 @@ const Multer = multer({
     limits: 5 * 1024 * 1024,
 });
 
-router.post('/', Multer.single("arquivo"), uploadImage.uploadImage, controller.post);
+router.post('/', Multer.single("arquivo"), uploadImage, controller.post);
 router.get('/', controller.get);
 router.get('/:id', controller.getById);
 router.put('/:id', controller.put);
