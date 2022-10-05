@@ -1,7 +1,4 @@
 'use strict';
-// import { getStorage, ref, deleteObject } from "gs://tudo-bem-autismo.appspot.com";
-// const getStorage = require('firebase-admin')
-// getStorage.a
 
 const test = require('../../services/firebase')
 
