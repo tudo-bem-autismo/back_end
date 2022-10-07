@@ -5,22 +5,12 @@ const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
 
-    // const Multer = multer({
-    //     storage: multer.memoryStorage(),
-    //     limits: {
-    //         fileSize: 5 * 1024 * 1024
-    //     }
-    // });
-
     const upload = require("../../services/firebase");
 
     let data = req.body;
     const image = req.file;
     
     const icone = upload.uploadImages(image);
-    console.log(icone)
-    // console.log(data.tbl_passo[0]['dialogo'])
-    // console.log(images)
 
     data['icone'] = icone;
 
@@ -72,17 +62,7 @@ exports.post = (req, res, next) => {
 
 exports.get = async (req, res, next) =>{
 
-    prisma.tbl_mini_jogo.findMany({
-
-        include:{
-            tbl_situacao_escolha: {
-                include: {
-                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_correto: true,
-                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_errado: true
-                }
-            }
-        }
-    })
+    prisma.tbl_mini_jogo.findMany()
     .then(
 
         (data) => {
