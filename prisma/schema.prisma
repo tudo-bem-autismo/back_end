@@ -67,7 +67,7 @@ model tbl_passo {
   imagem                                                                String?                @db.VarChar(300)
   texto                                                                 String?                @db.VarChar(100)
   passo_correto                                                         Boolean
-  descricao                                                             String?                @db.VarChar(100)
+  descricao                                                             String                 @db.VarChar(100)
   tbl_situacao_escolha_tbl_passoTotbl_situacao_escolha_id_passo_correto tbl_situacao_escolha[] @relation("tbl_passoTotbl_situacao_escolha_id_passo_correto")
   tbl_situacao_escolha_tbl_passoTotbl_situacao_escolha_id_passo_errado  tbl_situacao_escolha[] @relation("tbl_passoTotbl_situacao_escolha_id_passo_errado")
 }
