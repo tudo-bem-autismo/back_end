@@ -1,6 +1,7 @@
 'use strict';
 
 const multer = require('multer');
+const { tbl_situacao_escolha } = require('../prismaClient');
 const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
@@ -95,11 +96,13 @@ exports.getById = async (req, res, next) =>{
         include:{
             tbl_situacao_escolha: {
                 include: {
-                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_correto: true,
-                    tbl_passo_tbl_passoTotbl_situacao_escolha_id_passo_errado: true
+                    tbl_passo: true
+                },
+                orderBy:{
+                    ordem: 'asc'
                 }
-            }
-        }
+            },
+        },
     })
     .then(
 
@@ -111,6 +114,8 @@ exports.getById = async (req, res, next) =>{
     .catch(
 
         (error) =>{
+
+            console.log(error)
 
             if(error.code == "P2000"){
     
