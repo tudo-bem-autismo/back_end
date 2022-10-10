@@ -8,14 +8,14 @@ exports.post = (req, res, next) => {
 
     const situacoes = data.situacoes.map((situacao) =>{
 
-        const currentSituacao = situacao
+        const currentSituacao = situacao;
 
-        const passoCorreto = situacao.passos[0].passo_correto == 1 ? situacao.passos[0] : situacao.passos[1] 
-        const passoErrado = situacao.passos[0].passo_correto == 0 ? situacao.passos[0] : situacao.passos[1] 
+        const passoCorreto = situacao.passos[0].passo_correto == true ? situacao.passos[0] : situacao.passos[1];
+        const passoErrado = situacao.passos[0].passo_correto == false ? situacao.passos[0] : situacao.passos[1];
 
         prisma.tbl_situacao_escolha.create({
+            
             data:{
-                
                 ordem: situacao.ordem,
                 dialogo: situacao.dialogo,
                 imagem_exemplo: situacao.imagem_exemplo,
@@ -32,15 +32,15 @@ exports.post = (req, res, next) => {
         }).then(
             
             () => {
-                res.status(200).json({message: 'Deu certo'})
+                res.status(200).json({message: 'Deu certo'});
             }
         ).catch(
 
             (err) =>{
 
-                console.log(err)
+                console.log(err);
                 
             }
         )
-    })
+    });
 }

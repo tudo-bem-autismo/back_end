@@ -66,6 +66,7 @@ model tbl_passo {
   id                   Int                  @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   imagem               String?              @db.VarChar(300)
   texto                String?              @db.VarChar(100)
+  cor                  String?              @db.VarChar(10)
   passo_correto        Boolean
   descricao            String               @db.VarChar(100)
   id_situacao_escolha  Int                  @db.UnsignedInt
