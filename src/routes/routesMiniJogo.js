@@ -3,8 +3,6 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/controllerMiniJogo');
-const uploadImage = require('../../services/firebase')
-const routerSituacaoEscolha = require('./routesSituacaoEscolha')
 
 const multer = require('multer');
 const { memoryStorage, } = require('multer');
