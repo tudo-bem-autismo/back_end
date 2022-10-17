@@ -29,5 +29,5 @@ app.use('/crianca', routesCrianca);
 app.use('/nivelAutismo', routesNivelAutismo);
 app.use('/minijogo', routesMiniJogo);
 app.use('/minijogo/situacaoescolha', routesSituacaoEscolha)
-app.use('/crianca/relatorio', routesRelatorio)
+app.use('/relatorio', routesRelatorio)
 module.exports = app;
