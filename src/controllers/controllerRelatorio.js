@@ -59,10 +59,8 @@ exports.post = async(req, res, next) => {
 
             }else{
 
-                res.status(200).json({message: 'Infelixmente você não ganhou uma medalha desta vez, mas não desista!'})
-            }
-            
-            
+                res.status(200).json({message: 'Infelizmente você não ganhou uma medalha desta vez, mas não desista!'})
+            }   
         }
     
     ).catch(

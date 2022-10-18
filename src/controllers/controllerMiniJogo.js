@@ -1,5 +1,6 @@
 'use strict';
 
+const { raw } = require('body-parser');
 const multer = require('multer');
 const { tbl_situacao_escolha } = require('../prismaClient');
 const prisma = require('../prismaClient');
@@ -96,7 +97,11 @@ exports.getById = async (req, res, next) =>{
         include:{
             tbl_situacao_escolha: {
                 include: {
-                    tbl_passo: true
+                    tbl_passo:{
+                        orderBy:{
+                             
+                        }
+                    }
                 },
                 orderBy:{
                     ordem: 'asc'

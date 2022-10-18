@@ -16,6 +16,7 @@ const routesCrianca = require('./routes/routesCrianca');
 const routesMiniJogo = require('./routes/routesMiniJogo');
 const routesSituacaoEscolha = require('./routes/routesSituacaoEscolha');
 const routesRelatorio = require('./routes/routesRelatorio');
+const routesPremiacao = require('./routes/routesPremiacao')
 
 // app.use(bodyParser.json());
 
@@ -29,5 +30,6 @@ app.use('/crianca', routesCrianca);
 app.use('/nivelAutismo', routesNivelAutismo);
 app.use('/minijogo', routesMiniJogo);
 app.use('/minijogo/situacaoescolha', routesSituacaoEscolha)
-app.use('/relatorio', routesRelatorio)
+app.use('/crianca/perfil/relatorio', routesRelatorio)
+app.use('/crianca/perfil/relatorio/premiacao', routesPremiacao)
 module.exports = app;
