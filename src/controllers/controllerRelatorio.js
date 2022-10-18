@@ -1,9 +1,8 @@
 'use strict';
 
-const { raw } = require('@prisma/client/runtime');
 const prisma = require('../prismaClient');
 
-exports.post = (req, res, next) => {
+exports.post = async(req, res, next) => {
 
     const data = req.body;
 
@@ -17,14 +16,53 @@ exports.post = (req, res, next) => {
             id_mini_jogo: parseInt(data.id_mini_jogo)
         },
         select:{
-                id: true
+                id: true,
+                acertos: true,
+                erros: true,
+                id_crianca: true
         }
 
     }).then(
 
-        (data) => {
+        async (data) => {
 
-            res.status(200).json(data)
+            const acertosPorCento = (data.acertos * 100) / (data.acertos + data.erros)
+
+            const medals = await prisma.tbl_medalha.findMany()
+
+            const kidAward = medals.find( medal => acertosPorCento >= medal.criterio)
+
+            if(kidAward){
+
+                const award = await prisma.tbl_medalha_crianca.create({
+
+                    data:{
+    
+                        id_crianca: data.id_crianca,
+                        id_medalha: kidAward.id
+                    },
+                    select:{
+    
+                        id: true
+                    
+                    }
+                })
+    
+                if(award){
+    
+                    res.status(200).json(kidAward)
+    
+                }else{
+    
+                    res.status(500).json({message: 'Não foi possível gerar a premiação'})
+                }
+
+            }else{
+
+                res.status(200).json({message: 'Infelixmente você não ganhou uma medalha desta vez, mas não desista!'})
+            }
+            
+            
         }
     
     ).catch(
