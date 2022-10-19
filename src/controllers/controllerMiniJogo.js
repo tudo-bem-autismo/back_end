@@ -1,8 +1,5 @@
 'use strict';
 
-const { raw } = require('body-parser');
-const multer = require('multer');
-const { tbl_situacao_escolha } = require('../prismaClient');
 const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
@@ -97,11 +94,7 @@ exports.getById = async (req, res, next) =>{
         include:{
             tbl_situacao_escolha: {
                 include: {
-                    tbl_passo:{
-                        orderBy:{
-                             
-                        }
-                    }
+                    tbl_passo: true
                 },
                 orderBy:{
                     ordem: 'asc'
@@ -113,7 +106,45 @@ exports.getById = async (req, res, next) =>{
 
         (data) => {
 
-            res.status(200).json(data);
+            const situations = data[0].tbl_situacao_escolha
+            const datWithRandomOrderOfSteps = situations.map(
+
+                (situation) => {
+
+                    // situation.tbl_passo.sort(
+
+                    //     (firstStep, secondStep) => {
+
+                    //         const random = Math.floor(Math.random() * (255 - 0) + 0)
+                    //         console.log(random)
+
+                    //         if(random >= 127){
+
+                    //             return firstStep
+                            
+                    //         }else{
+
+                    //             return secondStep
+                    //         }
+                    //     }
+                    // )
+
+                    // situation.tbl_passo.sort(
+
+                    //     (a, b) =>{
+
+                    //         return Math.floor(Math.random() * (255 - 0) + 0)
+                    //     }
+                        
+                    // )
+
+                    return situation
+                }
+            )
+
+            // console.log(datWithRandomOrderOfSteps)
+
+            res.status(200).json(datWithRandomOrderOfSteps);
         }
     )
     .catch(

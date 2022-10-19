@@ -42,7 +42,7 @@ exports.post = async(req, res, next) => {
                         id_medalha: kidAward.id
                     },
                     select:{
-    
+                        
                         id: true
                     
                     }
