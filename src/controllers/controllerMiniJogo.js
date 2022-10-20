@@ -111,40 +111,30 @@ exports.getById = async (req, res, next) =>{
 
                 (situation) => {
 
-                    // situation.tbl_passo.sort(
+                    situation.tbl_passo.sort(
 
-                    //     (firstStep, secondStep) => {
+                        () => {
 
-                    //         const random = Math.floor(Math.random() * (255 - 0) + 0)
-                    //         console.log(random)
+                            const random = Math.floor(Math.random() * (255 - 0) + 0)
 
-                    //         if(random >= 127){
+                            if(random >= 127){
 
-                    //             return firstStep
+                                return 0
                             
-                    //         }else{
+                            }else{
 
-                    //             return secondStep
-                    //         }
-                    //     }
-                    // )
-
-                    // situation.tbl_passo.sort(
-
-                    //     (a, b) =>{
-
-                    //         return Math.floor(Math.random() * (255 - 0) + 0)
-                    //     }
-                        
-                    // )
+                                return -1
+                            }
+                        }
+                    )
 
                     return situation
                 }
             )
 
-            // console.log(datWithRandomOrderOfSteps)
+            data[0].tbl_situacao_escolha = datWithRandomOrderOfSteps
 
-            res.status(200).json(datWithRandomOrderOfSteps);
+            res.status(200).json(data);
         }
     )
     .catch(
