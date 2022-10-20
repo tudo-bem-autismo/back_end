@@ -119,7 +119,7 @@ exports.getById = async (req, res, next) =>{
 
                             if(random >= 127){
 
-                                return 0
+                                return 1
                             
                             }else{
 
