@@ -32,4 +32,5 @@ app.use('/minijogo', routesMiniJogo);
 app.use('/minijogo/situacaoescolha', routesSituacaoEscolha)
 app.use('/crianca/perfil/relatorio', routesRelatorio)
 app.use('/crianca/perfil/relatorio/premiacao', routesPremiacao)
+
 module.exports = app;

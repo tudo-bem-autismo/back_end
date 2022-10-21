@@ -77,3 +77,4 @@ const uploadImages = (image) =>{
 }
 
 module.exports = {uploadImage, uploadImages};
+
