@@ -76,5 +76,5 @@ const uploadImages = (image) =>{
     return `https://storage.googleapis.com/${BUCKET}/${fileName}`
 }
 
-module.exports = {uploadImage, uploadImages};
+module.exports = uploadImage, uploadImages;
 

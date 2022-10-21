@@ -61,7 +61,22 @@ exports.post = (req, res, next) => {
 
 exports.get = async (req, res, next) =>{
 
-    prisma.tbl_mini_jogo.findMany()
+    prisma.tbl_mini_jogo.findMany({
+
+        select: {
+            include: {
+                tbl_restricao: {
+                    include: {
+                        tbl_crianca: {
+                            where: {
+                                id: parseInt(id_responsavel)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
     .then(
 
         (data) => {

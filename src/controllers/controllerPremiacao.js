@@ -37,7 +37,7 @@ exports.get = async (req, res, next) => {
 
     const data = req.body;
 
-    const med
+    // const med
 
 
 
