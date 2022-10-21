@@ -24,4 +24,5 @@ app.use('/genero', routesGenero);
 app.use('/responsavel', routesResponsavel);
 app.use('/crianca', routesCrianca);
 app.use('/nivelAutismo', routesNivelAutismo);
+
 module.exports = app;

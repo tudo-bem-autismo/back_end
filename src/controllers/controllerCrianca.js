@@ -1,34 +1,30 @@
 'use strict';
 
+const test = require('../../services/firebase')
+
 const prisma = require('../prismaClient');
 
 exports.post = (req, res) =>{
 
-    let data = req.body;
+    const data = req.body;
 
-    if(req.file){
-
-        data['foto'] = req.file.path;
-    
-    }else{
-
-        data['foto'] = null
-    }
+    const {firebaseUrl} = req.file ? req.file : "";
 
     prisma.tbl_crianca.create({
 
         data:{
             nome: data.nome,
-            foto: data.foto,
+            foto: firebaseUrl,
             data_nascimento: new Date( data.data_nascimento)  ,
             id_genero: parseInt(data.id_genero),
             id_nivel_autismo: parseInt(data.id_nivel_autismo),
             id_responsavel: parseInt(data.id_responsavel)
         },
         select:{
-            id: true
+            id: true,
+            foto: true
         },
-    
+  
     }).then(
 
         (crianca) => {
@@ -149,15 +145,7 @@ exports.put = (req, res) =>{
 
     const id = req.params.id;
     const data = req.body;
-
-    if(req.file){
-
-        data['foto'] = req.file.path;
-    
-    }else{
-
-        data['foto'] = null
-    }
+    const {firebaseUrl} = req.file ? req.file : "";
 
     prisma.tbl_crianca.update({
 
@@ -169,7 +157,7 @@ exports.put = (req, res) =>{
         data:{
 
             nome: data.nome,
-            foto: data.foto,
+            foto: firebaseUrl,
             data_nascimento: new Date( data.data_nascimento)  ,
             id_genero: parseInt(data.id_genero),
             id_nivel_autismo: parseInt(data.id_nivel_autismo),
@@ -225,8 +213,7 @@ exports.put = (req, res) =>{
     )
 }
 
-exports.delete = (req, res, next) =>{
-
+exports.delete = async(req, res, next) =>{
 
     const id = req.params.id;
 
@@ -236,11 +223,11 @@ exports.delete = (req, res, next) =>{
             
             id: parseInt(id)
         
-        }
+        },
     
     }).then(
 
-        () => {
+        async(data) => {
 
             res.status(200).json({message: "Registro excluído com sucesso."})
         }
@@ -248,6 +235,8 @@ exports.delete = (req, res, next) =>{
     ).catch(
 
         (error) => {
+
+            console.log(error)
 
             if(error.code == "P2025"){
 
