@@ -2,16 +2,6 @@
 
 const prisma = require('../prismaClient');
 
-// exports.get = async (req, res, next) =>{
-
-//     const model = require('../models/modelNivelAutismo')
-
-//     const data = await model.getAllNiveis();
-
-//     res.status(200).send(data);
-
-// };
-
 exports.get = (req, res, next) => {
 
     prisma.tbl_nivel_autismo.findMany()

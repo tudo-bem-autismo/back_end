@@ -42,5 +42,39 @@ const uploadImage = (req, res, next) => {
     stream.end(image.buffer);
 }
 
+const uploadImages = (image) =>{
 
-module.exports = uploadImage
+    const fileName = Date.now() + "." + image.originalname.split(".").pop();
+
+    const file = bucket.file(fileName);
+
+    const stream = file.createWriteStream({
+        metadata: {
+            contentType: image.mimetype,
+        },
+    });
+
+    stream.on("error", (e) => {
+        console.error(e);
+    })
+
+    stream.on("finish", async () => {
+        //Make the file public
+        await file.makePublic();
+
+        //Get the public URL
+        image = `https://storage.googleapis.com/${BUCKET}/${fileName}`;
+            
+    })
+
+    stream.end(image.buffer);
+
+    // console.log(fileName)
+
+
+
+    return `https://storage.googleapis.com/${BUCKET}/${fileName}`
+}
+
+module.exports = {uploadImage, uploadImages};
+

@@ -13,16 +13,24 @@ const routesGenero = require('./routes/routesGenero');
 const routesNivelAutismo = require('./routes/routesNivelAutismo');
 const routesResponsavel = require('./routes/routesResponsavel');
 const routesCrianca = require('./routes/routesCrianca');
+const routesMiniJogo = require('./routes/routesMiniJogo');
+const routesSituacaoEscolha = require('./routes/routesSituacaoEscolha');
+const routesRelatorio = require('./routes/routesRelatorio');
+const routesPremiacao = require('./routes/routesPremiacao')
 
 // app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 app.use('/', indexRoutes);
 app.use('/genero', routesGenero);
 app.use('/responsavel', routesResponsavel);
 app.use('/crianca', routesCrianca);
 app.use('/nivelAutismo', routesNivelAutismo);
+app.use('/minijogo', routesMiniJogo);
+app.use('/minijogo/situacaoescolha', routesSituacaoEscolha)
+app.use('/crianca/perfil/relatorio', routesRelatorio)
+app.use('/crianca/perfil/relatorio/premiacao', routesPremiacao)
 
 module.exports = app;
