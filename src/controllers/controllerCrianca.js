@@ -76,6 +76,19 @@ exports.get = (req, res) =>{
             tbl_nivel_autismo: true,
             tbl_responsavel: true
             
+        },
+        select: {
+            include: {
+                tbl_restricao: {
+                    include: {
+                        tbl_crianca: {
+                            where: {
+                                id: parseInt(id_responsavel)
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }).then(
