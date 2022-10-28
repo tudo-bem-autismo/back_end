@@ -63,18 +63,6 @@ exports.get = async (req, res, next) =>{
 
     const id = parseInt(req.params.id)
 
-    // prisma.tbl_mini_jogo.findMany({
-
-    //     select: {
-    //         include: {
-    //             tbl_restricao: {
-    //                 include: {
-    //                     tbl_crianca: true
-    //                 }
-    //             }
-    //         }
-    //     }
-    // })
     prisma.tbl_mini_jogo.findMany({
 
        include:{

@@ -6,8 +6,6 @@ exports.post = (req, res) => {
 
     const data = req.body;
 
-    // console.log(data.id_crianca)
-
     prisma.tbl_restricao.create({
 
         data: {
@@ -25,8 +23,6 @@ exports.post = (req, res) => {
     ).catch(
 
         (error) =>{
-
-            console.log(error)
 
             if(error.code == 'P2003'){
 
