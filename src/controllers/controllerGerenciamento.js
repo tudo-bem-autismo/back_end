@@ -6,11 +6,13 @@ exports.post = (req, res) => {
 
     const data = req.body;
 
+    // console.log(data.id_crianca)
+
     prisma.tbl_restricao.create({
 
         data: {
             id_crianca: parseInt(data.id_crianca),
-            id_minijogo: parseInt(data.id_minijogo)
+            id_mini_jogo: parseInt(data.id_mini_jogo)
         },
         select: {
             id: true
@@ -23,6 +25,8 @@ exports.post = (req, res) => {
     ).catch(
 
         (error) =>{
+
+            console.log(error)
 
             if(error.code == 'P2003'){
 

@@ -61,6 +61,8 @@ exports.post = (req, res, next) => {
 
 exports.get = async (req, res, next) =>{
 
+    const id = parseInt(req.params.id)
+
     // prisma.tbl_mini_jogo.findMany({
 
     //     select: {
@@ -78,8 +80,7 @@ exports.get = async (req, res, next) =>{
        include:{
         tbl_restricao:{
             where:{
-                id_crianca: parseInt(id),
-                id_mini_jogo
+                id_crianca: id
             }
         }
        }
