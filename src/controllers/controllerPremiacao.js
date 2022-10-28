@@ -9,7 +9,7 @@ exports.get = async (req, res, next) => {
     const premiacoes = await prisma.tbl_medalha_crianca.findMany({
         where: {
             id_crianca: parseInt(id)
-        }
+        },
     })
 
     if (premiacoes) {
@@ -29,10 +29,7 @@ exports.get = async (req, res, next) => {
 
                     return {
 
-                        id: medalha.id,
-                        nome: medalha.nome,
-                        criterio: medalha.criterio,
-                        medalha: medalha.medalha,
+                        ...medalha,
                         quantidade: count.length
                     }
                 }
@@ -56,8 +53,4 @@ exports.get = async (req, res, next) => {
 
         res.status(404).json({message: 'Esta criança não possui premiações'})
     }
-
-
-
-
 }

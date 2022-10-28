@@ -5,8 +5,5 @@ const router = express.Router();
 const controller = require('../controllers/controllerPremiacao');
 
 router.get('/:id', controller.get);
-// router.post('/', controller.post);
-// router.get('/:id', controller.getById);
-
 
 module.exports = router;
