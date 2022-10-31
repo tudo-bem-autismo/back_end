@@ -2,47 +2,61 @@
 
 const prisma = require('../prismaClient');
 
-exports.post = (req, res) => {
+exports.post = async (req, res) => {
 
     const data = req.body;
 
-    prisma.tbl_restricao.create({
+    const restricaoExiste = await prisma.tbl_restricao.findFirst({
 
-        data: {
-            id_crianca: parseInt(data.id_crianca),
-            id_mini_jogo: parseInt(data.id_mini_jogo)
-        },
-        select: {
-            id: true
+        where:{
+           id_crianca: parseInt(data.id_crianca),
+           id_mini_jogo: parseInt(data.id_mini_jogo)
         }
-    }).then(
+    })
 
-        (data) => {
-            res.status(201).json(data)
-        }
-    ).catch(
+    if(restricaoExiste){
+        return res.status(400).send({message: "Restrição já existente neste minijogo!"});
+    } else {
+        prisma.tbl_restricao.create({
 
-        (error) =>{
-
-            if(error.code == 'P2003'){
-
-                res.status(400).json({message: `Chave estrangeira inválida no campo ${error.meta.field_name}`})
-
-            }else{
-
-                const argument = error.message.split('Argument')[1]
-
-                if(argument){
-
-                    const err = argument.split('\n')[0]
-                    res.status(400).json({"message" : err});
-
-                }else{
-                    res.status(500).json({"message" : error});
-                }   
+            data: {
+                id_crianca: parseInt(data.id_crianca),
+                id_mini_jogo: parseInt(data.id_mini_jogo)
+            },
+            select: {
+                id: true
             }
-        }
-    )
+        }).then(
+    
+            (data) => {
+                res.status(201).json(data)
+            }
+        ).catch(
+    
+            (error) =>{
+    
+                if(error.code == 'P2003'){
+    
+                    res.status(400).json({message: `Chave estrangeira inválida no campo ${error.meta.field_name}`})
+    
+                }else{
+    
+                    const argument = error.message.split('Argument')[1]
+    
+                    if(argument){
+    
+                        const err = argument.split('\n')[0]
+                        res.status(400).json({"message" : err});
+    
+                    }else{
+                        res.status(500).json({"message" : error});
+                    }   
+                }
+            }
+        )
+    }
+
+   
 }
 
 exports.get = (req, res) => {
