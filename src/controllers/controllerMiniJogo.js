@@ -61,83 +61,37 @@ exports.post = (req, res, next) => {
 
 exports.get = async (req, res, next) => {
 
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
 
-
-    // prisma.$queryRawUnsafe`
-    // select tbl_mini_jogo.id as id_mini_jogo,
-	// 	tbl_mini_jogo.nome as nome_mini_jogo,
-    //     tbl_mini_jogo.icone,
-    //     tbl_restricao.id as id_restricao,
-    //     tbl_crianca.id as id_crianca,
-    //     tbl_crianca.nome as nome_crianca,
-    //     tbl_crianca.foto,
-    //     tbl_responsavel.id as id_responsavel
-	// from tbl_mini_jogo
-	// 	inner join tbl_restricao
-	// 		on tbl_mini_jogo.id = tbl_restricao.id_mini_jogo
-	// 	inner join tbl_crianca
-	// 		on tbl_restricao.id_crianca = tbl_crianca.id
-	// 	inner join tbl_responsavel
-	// 		on tbl_crianca.id_responsavel = tbl_responsavel.id
-	// 	where tbl_responsavel.id = ${parseInt(id)}
-	// 	order by tbl_responsavel.id;`
-
-    // prisma.tbl_responsavel.findMany({
-
-    //     include:{
-    //         tbl_crianca: true
-    //     },
-    //     select:{
-    //         tbl_crianca:{
-    //             include:{
-    //                 tbl_restricao:{
-    //                     where:{
-    //                         t
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // })
     // prisma.tbl_mini_jogo.findMany({
     //     include:{
     //         tbl_restricao:{
-    //             include:{
+    //             where:{
     //                 tbl_crianca:{
-    //                     include:{
-    //                         tbl_responsavel: true
-    //                     }
+    //                     id_responsavel:id
     //                 }
     //             }
     //         }
-    //     },
-    //     where:{
-            
     //     }
     // })
 
-    // prisma.tbl_mini_jogo.findMany({
-    //     select:{
-    //         tbl_restricao:{
-    //             include:{
-    //                 tbl_crianca:{
-    //                     include:{
-    //                         tbl_responsavel: true
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     },
-    //     where:{
-    //         tbl_restricao:{
-    //             i
-    //         }
-    //     }
-    // })
+    prisma.tbl_mini_jogo.findMany({
+        include:{
+            tbl_restricao:{
+                where:{
+                    tbl_crianca:{
+                        tbl_responsavel:{
+                            id: id
+                        }
+                    }
+                }
+            }
+        }
+    })
         .then(
 
             (data) => {
+                console.log(data);
 
                 res.status(200).json(data);
             }
