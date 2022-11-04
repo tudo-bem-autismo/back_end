@@ -26,8 +26,8 @@ exports.get = async (req, res, next) => {
 
                         (premiacao) => premiacao.id_medalha == medalha.id
                     )
-
                     return {
+
 
                         ...medalha,
                         quantidade: count.length

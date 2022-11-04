@@ -1,4 +1,4 @@
-'use strict';
+    'use strict';
 
 const prisma = require('../prismaClient');
 
@@ -8,7 +8,7 @@ exports.post = (req, res, next) => {
 
     let data = req.body;
     const image = req.file;
-    
+
     const icone = upload.uploadImages(image);
 
     data['icone'] = icone;
@@ -16,71 +16,98 @@ exports.post = (req, res, next) => {
     prisma.tbl_mini_jogo.create({
 
         data,
-        select:{
+        select: {
 
             id: true
 
         }
-    
+
     }).then(
-
-        (data) =>{
-
-            res.status(200).json(data);
-        }
-    
-    ).catch(
-
-        (error) =>{
-
-            console.log(error)
-
-            if(error.code == "P2000"){
-
-                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
-
-            }else{
-
-                const argument = error.message.split('Argument')[1]
-
-                if(argument){
-
-                    const err = argument.split('\n')[0]
-
-                    res.status(400).json({"message" : err});
-
-                }else{
-
-                    res.status(500).json({"message" : error});
-
-                }   
-            }
-        }
-    );
-}
-
-exports.get = async (req, res, next) =>{
-
-    prisma.tbl_mini_jogo.findMany()
-    .then(
 
         (data) => {
 
             res.status(200).json(data);
         }
-    )
-    .catch(
 
-        (error) =>{
+    ).catch(
+
+        (error) => {
 
             console.log(error)
 
-            res.status(500).json({"message" : error})
+            if (error.code == "P2000") {
+
+                res.status(500).json({ message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.` })
+
+            } else {
+
+                const argument = error.message.split('Argument')[1]
+
+                if (argument) {
+
+                    const err = argument.split('\n')[0]
+
+                    res.status(400).json({ "message": err });
+
+                } else {
+
+                    res.status(500).json({ "message": error });
+
+                }
+            }
         }
     );
 }
 
-exports.getById = async (req, res, next) =>{
+exports.get = async (req, res, next) => {
+
+    const id = parseInt(req.params.id);
+
+    // prisma.tbl_mini_jogo.findMany({
+    //     include:{
+    //         tbl_restricao:{
+    //             where:{
+    //                 tbl_crianca:{
+    //                     id_responsavel:id
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
+
+    prisma.tbl_mini_jogo.findMany({
+        include:{
+            tbl_restricao:{
+                where:{
+                    tbl_crianca:{
+                        tbl_responsavel:{
+                            id: id
+                        }
+                    }
+                }
+            }
+        }
+    })
+        .then(
+
+            (data) => {
+                console.log(data);
+
+                res.status(200).json(data);
+            }
+        )
+        .catch(
+
+            (error) => {
+
+                console.log(error)
+
+                res.status(500).json({ "message": error })
+            }
+        );
+}
+
+exports.getById = async (req, res, next) => {
 
     const id = req.params.id
 
@@ -90,79 +117,79 @@ exports.getById = async (req, res, next) =>{
 
             id: parseInt(id)
 
-        } ,
-        include:{
+        },
+        include: {
             tbl_situacao_escolha: {
                 include: {
                     tbl_passo: true
                 },
-                orderBy:{
+                orderBy: {
                     ordem: 'asc'
                 }
             },
         },
     })
-    .then(
+        .then(
 
-        (data) => {
+            (data) => {
 
-            const situations = data[0].tbl_situacao_escolha
-            const datWithRandomOrderOfSteps = situations.map(
+                const situations = data[0].tbl_situacao_escolha
+                const datWithRandomOrderOfSteps = situations.map(
 
-                (situation) => {
+                    (situation) => {
 
-                    situation.tbl_passo.sort(
+                        situation.tbl_passo.sort(
 
-                        () => {
+                            () => {
 
-                            const random = Math.floor(Math.random() * (255 - 0) + 0)
+                                const random = Math.floor(Math.random() * (255 - 0) + 0)
 
-                            if(random >= 127){
+                                if (random >= 127) {
 
-                                return 1
-                            
-                            }else{
+                                    return 1
 
-                                return -1
+                                } else {
+
+                                    return -1
+                                }
                             }
-                        }
-                    )
+                        )
 
-                    return situation
-                }
-            )
+                        return situation
+                    }
+                )
 
-            data[0].tbl_situacao_escolha = datWithRandomOrderOfSteps
+                data[0].tbl_situacao_escolha = datWithRandomOrderOfSteps
 
-            res.status(200).json(data);
-        }
-    )
-    .catch(
-
-        (error) =>{
-
-            console.log(error)
-
-            if(error.code == "P2000"){
-    
-                res.status(500).json({message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.`})
-    
-            }else{
-    
-                const argument = error.message.split('Argument')[1]
-    
-                if(argument){
-    
-                    const err = argument.split('\n')[0]
-                    
-                    res.status(400).json({"message" : err});
-    
-                }else{
-    
-                    res.status(500).json({"message" : error});
-    
-                }   
+                res.status(200).json(data);
             }
-        }
-    );
+        )
+        .catch(
+
+            (error) => {
+
+                console.log(error)
+
+                if (error.code == "P2000") {
+
+                    res.status(500).json({ message: `A quantidade máxima de caracteres foi ultrapassada no campo ${error.meta.column_name}.` })
+
+                } else {
+
+                    const argument = error.message.split('Argument')[1]
+
+                    if (argument) {
+
+                        const err = argument.split('\n')[0]
+
+                        res.status(400).json({ "message": err });
+
+                    } else {
+
+                        res.status(500).json({ "message": error });
+
+                    }
+                }
+            }
+        );
 }
