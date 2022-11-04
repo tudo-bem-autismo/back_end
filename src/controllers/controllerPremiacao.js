@@ -4,42 +4,53 @@ const prisma = require('../prismaClient');
 
 exports.get = async (req, res, next) => {
 
-    // const data = req.body;
+    const id = req.params.id;
 
-    // const goldMedals = await prisma.tbl_medalha_crianca.count({
-    //     where:{
-    //         id_crianca: parseInt(data.id_crianca),
-    //         id_medalha: 1
+    const premiacoes = await prisma.tbl_medalha_crianca.findMany({
+        where: {
+            id_crianca: parseInt(id)
+        },
+    })
 
-    //     },
-    //     where:{
-    //         id_crianca: parseInt(data.id_crianca),
-    //         id_medalha: 2
+    if (premiacoes) {
 
-    //     },
-    //     where:{
-    //         id_crianca: parseInt(data.id_crianca),
-    //         id_medalha: 3
-    //     }
-    // }).then(
+        const medalhas = await prisma.tbl_medalha.findMany()
 
-    //     (data) =>{
+        if (medalhas) {
 
-    //         console.log(data)
-    //     }
-    // ).catch(
+            const totalPremiacoesPorMedalha = medalhas.map(
 
-    //     (err) =>{
+                (medalha) => {
 
-    //         console.log(err)
-    //     }
-    // )
+                    const count = premiacoes.filter(
 
-    const data = req.body;
-
-    // const med
+                        (premiacao) => premiacao.id_medalha == medalha.id
+                    )
+                    return {
 
 
+                        ...medalha,
+                        quantidade: count.length
+                    }
+                }
+            )
 
+            if(totalPremiacoesPorMedalha){
 
+                res.status(200).json(totalPremiacoesPorMedalha)
+            
+            }else{
+
+                res.status(500).json({message: 'Erro no filter'})
+            }
+
+        }else{
+
+            res.status(500).json({message: 'Erro ao buscar as medalahas'})
+        }
+    
+    }else{
+
+        res.status(404).json({message: 'Esta criança não possui premiações'})
+    }
 }
