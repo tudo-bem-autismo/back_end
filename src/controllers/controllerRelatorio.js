@@ -73,7 +73,7 @@ exports.post = async(req, res, next) => {
     )
 }
 
-exports.get = (req, res, next) => {
+exports.list = (req, res, next) => {
 
     const data = req.body;
 

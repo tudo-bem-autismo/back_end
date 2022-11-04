@@ -29,8 +29,8 @@ app.use('/crianca', routesCrianca);
 app.use('/nivelAutismo', routesNivelAutismo);
 app.use('/minijogo', routesMiniJogo);
 app.use('/minijogo/situacaoescolha', routesSituacaoEscolha);
-app.use('/crianca/perfil/relatorio', routesRelatorio);
-app.use('/crianca/perfil/relatorio/premiacao', routesPremiacao);
+app.use('/relatorio', routesRelatorio);
+app.use('/premiacao', routesPremiacao);
 app.use('/gerenciamento', routesGerenciamento);
 
 module.exports = app;
