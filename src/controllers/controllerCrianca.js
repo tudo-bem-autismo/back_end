@@ -1,7 +1,5 @@
 'use strict';
 
-const test = require('../../services/firebase')
-
 const prisma = require('../prismaClient');
 
 exports.post = (req, res) =>{
