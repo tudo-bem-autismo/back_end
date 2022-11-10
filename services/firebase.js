@@ -1,17 +1,17 @@
 var admin = require("firebase-admin");
- 
+
 var serviceAccount = require("../src/config/firebaseKey.json");
 
 const BUCKET = "tudo-bem-autismo.appspot.com";
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: BUCKET,
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: BUCKET,
 });
-     
+
 const bucket = admin.storage().bucket();
 
-const uploadImage = (req, res, next) => {
+exports.uploadImage = (req, res, next) => {
     if(!req.file) return next();
 
     const image = req.file;
@@ -42,7 +42,7 @@ const uploadImage = (req, res, next) => {
     stream.end(image.buffer);
 }
 
-const uploadImages = (image) =>{
+exports.uploadImages = (image) => {
 
     const fileName = Date.now() + "." + image.originalname.split(".").pop();
 
@@ -64,7 +64,7 @@ const uploadImages = (image) =>{
 
         //Get the public URL
         image = `https://storage.googleapis.com/${BUCKET}/${fileName}`;
-            
+
     })
 
     stream.end(image.buffer);
@@ -76,5 +76,34 @@ const uploadImages = (image) =>{
     return `https://storage.googleapis.com/${BUCKET}/${fileName}`
 }
 
-module.exports = uploadImage, uploadImages;
+exports.uploadFiles =  (fileToUpload) => {
 
+    // console.log(fileToUpload)
+    const fileName = Date.now() + "." + fileToUpload.originalname.split(".").pop();
+
+    const file = bucket.file(fileName);
+
+    const stream = file.createWriteStream({
+        metadata: {
+            contentType: fileToUpload.mimetype,
+        },
+    });
+
+    stream.on("error", (e) => {
+        console.error(e);
+    })
+
+    stream.on("finish", async () => {
+        //Make the file public
+        await file.makePublic();
+    })
+
+    stream.end(fileToUpload.buffer);
+
+    const uploadedFile = {
+        link: `https://storage.googleapis.com/${BUCKET}/${fileName}`,
+        originalname: fileToUpload.originalname
+    }   
+
+    return uploadedFile
+}

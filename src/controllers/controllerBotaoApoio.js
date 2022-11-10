@@ -1,36 +1,22 @@
 'use strict';
 
 const prisma = require('../prismaClient');
+const firebase = require('../../services/firebase')
 
-exports.post = async (req, res) => {
-
-    // const files = req.files
-
-    // files.map((file)=>{
-
-    // })
-
-    // 
+exports.post = (req, res) => {
 
     try {
 
         const files = req.files
-        // console.log(files)
 
-        files.map((file) => {
-            const mimetype = file.mimetype.split('/')[0]
-            console.log(mimetype)
-
-            // image
-            // image
-            // application
-            // video
-            // audio
+        const uploads = files.map((file) => {
+            return firebase.uploadFiles(file)
         })
+
+        res.status(200).json(uploads)
 
     } catch (error) {
 
         throw error
-
     }
 } 

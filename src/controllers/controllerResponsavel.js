@@ -90,8 +90,9 @@ exports.get = async (req, res, next) =>{
     .catch(
 
         (error) =>{
-
-            res.status(500).json({"message" : error})
+            
+            const e = new Error(error)
+            res.status(500).json(e.message)
         }
     );
 
@@ -164,8 +165,6 @@ exports.put = async (req, res, next) =>{
         }
     }
 
-    
-
     prisma.tbl_responsavel.update({
 
         data,
@@ -227,9 +226,7 @@ exports.putPassword = (req, res, next) =>{
     const data = req.body;
 
     if(data.senha && data.senha_atual){
-
-        // console.log('entreiii')
-
+        
         prisma.tbl_responsavel.findUnique({
 
             where:{
