@@ -3,11 +3,11 @@ const http = require('http');
 const debug = require('debug');
 
 const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+app.set('port', '3000');
 
 const server = http.createServer(app);
 
-server.listen(port);
+server.listen('3000');
 
 server.on('error', onError);
 server.on('listening', onListening);
