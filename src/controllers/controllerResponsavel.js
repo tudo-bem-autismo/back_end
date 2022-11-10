@@ -93,9 +93,9 @@ exports.get = async (req, res, next) =>{
 
             console.log(error)
 
-            throw error
+            // throw error
 
-            res.status(500).json({"message" : error})
+            res.status(500).json(error)
         }
     );
 
