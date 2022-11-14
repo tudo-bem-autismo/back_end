@@ -75,4 +75,82 @@ exports.post = async (req, res) => {
         console.log(e)
         res.status(500).json(error)
     }
-} 
+}
+
+exports.delete = async (req, res) => {
+
+    const id = parseInt(req.params.id)
+
+    prisma.tbl_botao_apoio.delete({
+
+        where: {
+            id: id
+        }
+
+    })
+        .then(() => res.status(200).json({ message: 'Registro excluído com sucesso!' }))
+        .catch((error) => {
+
+            if (error.code == 'P2003') {
+
+                res.status(400).json({ message: `Chave estrangeira inválida no campo ${error.meta.field_name}` })
+
+            } else {
+
+                const argument = error.message.split('Argument')[1]
+
+                if (argument) {
+
+                    const err = argument.split('\n')[0]
+
+                    res.status(400).json({ "message": err });
+
+                } else {
+
+                    res.status(500).json({ "message": error });
+
+                }
+            }
+
+        })
+}
+
+exports.get = async (req, res) => {
+
+    const id = parseInt(req.params.id)
+
+    prisma.tbl_botao_apoio.findMany({
+        where: {
+            id_crianca: id
+        },
+        select:{
+            id:true,
+            midia:true,
+            nome_original:true,
+            tbl_tipo_midia:{
+                select:{
+                    tipo:true
+                }
+            }
+        }
+    })
+        .then((data) => res.status(200).json(data))
+        .catch((error) => {
+
+
+            const argument = error.message.split('Argument')[1]
+
+            if (argument) {
+
+                const err = argument.split('\n')[0]
+
+                res.status(400).json({ "message": err });
+
+            } else {
+
+                res.status(500).json({ "message": error });
+
+            }
+        })
+}
+

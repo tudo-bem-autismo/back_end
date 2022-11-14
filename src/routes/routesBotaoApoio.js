@@ -13,8 +13,8 @@ const Multer = multer({
 
 router.post('/',Multer.any(), controller.post);
 // router.put('/:id', controller.put);
-// router.delete('/:id', controller.delete);
+router.delete('/:id', controller.delete);
 // router.get('/', controller.get);
-// router.get('/:id', controller.getById);
+router.get('/:id', controller.get);
 
 module.exports = router;
