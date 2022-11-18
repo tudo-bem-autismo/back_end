@@ -18,6 +18,9 @@ const routesRelatorio = require('./routes/routesRelatorio');
 const routesPremiacao = require('./routes/routesPremiacao');
 const routesGerenciamento = require('./routes/routesGerenciamento');
 const routesBotaoApoio = require('./routes/routesBotaoApoio');
+const routesIcone = require('./routes/routesIcone');
+const routesDiaSemana = require('./routes/routesDiaSemana');
+const routesTarefa = require('./routes/routesTarefa');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -33,5 +36,8 @@ app.use('/relatorio', routesRelatorio);
 app.use('/premiacao', routesPremiacao);
 app.use('/gerenciamento', routesGerenciamento);
 app.use('/botaoApoio', routesBotaoApoio);
+app.use('/icone', routesIcone);
+app.use('/diasemana', routesDiaSemana);
+app.use('/tarefa', routesTarefa);
 
 module.exports = app;

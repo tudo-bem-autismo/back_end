@@ -4,13 +4,12 @@ const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
 
-    const data = req.body;
+    const id_crianca = req.params.id;
 
-    prisma.tbl_tarefa.create({
+    prisma.tbl_crianca_tarefa.create({
         data:{
-            horario: data.horario,
-            titulo: data.titulo,
-            id_icone: parseInt(data.id_icone)
+            id_crianca: parseInt(id_crianca),
+            id_tarefa: parseInt(id_tarefa)
         },
         select:{
             id: true
@@ -29,10 +28,17 @@ exports.post = (req, res, next) => {
 
 exports.get = (req, res) =>{
 
-    prisma.tbl_tarefa.findMany({
+    const id_crianca = req.params.id;
 
+    prisma.tbl_crianca_tarefa.findMany({
+
+        where:{
+            id_crianca: parseInt(id_crianca)
+        },
         include:{
-            tbl_icone: true
+            tbl_tarefa: true,
+            tbl_icone: true,
+            tbl_dia_semana: true
         }
 
     }).then(
@@ -50,4 +56,36 @@ exports.get = (req, res) =>{
             res.status(500).json({ "message": error })
         }
     )
+}
+
+exports.getById = (req, res, next) =>{
+
+    const prisma = require('../prismaClient');
+
+    const id = req.params.id;
+
+    prisma.tbl_crianca_tarefa.findUnique({
+
+        where:{
+            id: parseInt(id)
+        }
+    
+    }).then(
+
+        (data) => {
+
+            res.status(200).send(data);
+        }
+    
+    ).catch(
+
+        (error) => {
+
+            const argument = error.message.split('Argument')[1]
+            const err = argument.split('\n')[0]
+
+            res.status(400).json({"message" : err});
+        }
+    );
+
 }
