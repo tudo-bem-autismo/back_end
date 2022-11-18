@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
-const uploadImage = require("../../services/firebase");
+const firebase = require("../../services/firebase");
 
 const controller = require('../controllers/controllerCrianca');
 
@@ -14,10 +14,10 @@ const Multer = multer({
     limits: 5 * 1024 * 1024,
 });
 
-router.post('/', Multer.single("arquivo"), uploadImage, controller.post);
+router.post('/', Multer.single("arquivo"), firebase.uploadImage, controller.post);
 router.get('/', controller.get);
 router.get('/:id', controller.getById);
-router.put('/:id', Multer.single("arquivo"), uploadImage, controller.put);
+router.put('/:id', Multer.single("arquivo"), firebase.uploadImage, controller.put);
 router.delete('/:id', controller.delete);
 
 module.exports = router;

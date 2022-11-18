@@ -1,4 +1,4 @@
-    'use strict';
+'use strict';
 
 const prisma = require('../prismaClient');
 
@@ -63,24 +63,12 @@ exports.get = async (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
-    // prisma.tbl_mini_jogo.findMany({
-    //     include:{
-    //         tbl_restricao:{
-    //             where:{
-    //                 tbl_crianca:{
-    //                     id_responsavel:id
-    //                 }
-    //             }
-    //         }
-    //     }
-    // })
-
     prisma.tbl_mini_jogo.findMany({
-        include:{
-            tbl_restricao:{
-                where:{
-                    tbl_crianca:{
-                        tbl_responsavel:{
+        include: {
+            tbl_restricao: {
+                where: {
+                    tbl_crianca: {
+                        tbl_responsavel: {
                             id: id
                         }
                     }
@@ -192,4 +180,40 @@ exports.getById = async (req, res, next) => {
                 }
             }
         );
+}
+
+exports.getForChild = async (req, res, next) => {
+
+    try {
+
+        const id = parseInt(req.params.id);
+        const games = await prisma.tbl_mini_jogo.findMany({
+            where: {
+                NOT: {
+                    tbl_restricao: {
+                        some: {
+                            id_crianca: id
+                        }
+                    }
+                }
+            }
+        })
+
+        res.status(200).json(games)
+
+    } catch (error) {
+
+        const argument = error.message.split('Argument')[1]
+
+        if (argument) {
+
+            const err = argument.split('\n')[0]
+            res.status(400).json({ "message": err });
+
+        } else {
+
+            res.status(500).json({ "message": error });
+
+        }
+    }
 }
