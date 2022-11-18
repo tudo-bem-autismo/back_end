@@ -93,6 +93,7 @@ exports.get = async (req, res, next) =>{
             
             const e = new Error(error)
             res.status(500).json(e.message)
+
         }
     );
 
