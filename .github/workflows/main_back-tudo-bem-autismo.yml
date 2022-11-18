@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'back-tudo-bem-autismo'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7DFA060FE9FA4D6D9A7224EB523BC944 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9231CA24CC22472196E513147F2C5E6C }}
           package: .
