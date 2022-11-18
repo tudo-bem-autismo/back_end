@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const router = express.Router();
 
-//Load the application routes
 const indexRoutes = require('./routes/indexRoutes');
 
 const routesGenero = require('./routes/routesGenero');
@@ -18,6 +17,7 @@ const routesSituacaoEscolha = require('./routes/routesSituacaoEscolha');
 const routesRelatorio = require('./routes/routesRelatorio');
 const routesPremiacao = require('./routes/routesPremiacao');
 const routesGerenciamento = require('./routes/routesGerenciamento');
+const routesBotaoApoio = require('./routes/routesBotaoApoio');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -32,5 +32,6 @@ app.use('/minijogo/situacaoescolha', routesSituacaoEscolha);
 app.use('/relatorio', routesRelatorio);
 app.use('/premiacao', routesPremiacao);
 app.use('/gerenciamento', routesGerenciamento);
+app.use('/botaoApoio', routesBotaoApoio);
 
 module.exports = app;

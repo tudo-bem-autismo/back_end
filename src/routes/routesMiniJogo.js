@@ -16,6 +16,7 @@ const Multer = multer({
 
 router.post('/', Multer.single('icone'), controller.post)
 router.get('/listagem/:id', controller.get)
+router.get('/listagem/crianca/:id', controller.getForChild)
 router.get('/:id', controller.getById)
 
 module.exports = router;

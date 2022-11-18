@@ -12,7 +12,8 @@
     "http": "^0.0.1-security",
     "mongoose": "^6.6.0",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "simple-thumbnail": "^1.6.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.19",
