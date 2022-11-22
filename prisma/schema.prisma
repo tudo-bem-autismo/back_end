@@ -134,7 +134,6 @@ model tbl_restricao {
   @@index([id_mini_jogo], map: "FK_Mini_Jogo_Restricao")
 }
 
-
 model tbl_botao_apoio {
   id             Int            @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   midia          String         @db.VarChar(300)
@@ -159,11 +158,11 @@ model tbl_crianca_tarefa {
   id          Int         @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   id_crianca  Int         @db.UnsignedInt
   id_tarefa   Int         @db.UnsignedInt
-  tbl_crianca tbl_crianca @relation(fields: [id_crianca], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Crianca_Tarefa_Crianca")
-  tbl_tarefa  tbl_tarefa  @relation(fields: [id_tarefa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Crianca_Tarefa_Tarefa")
+  tbl_crianca tbl_crianca @relation(fields: [id_crianca], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Crianca_Crianca_Tarefa")
+  tbl_tarefa  tbl_tarefa  @relation(fields: [id_tarefa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Tarefa_Crianca_Tarefa")
 
-  @@index([id_crianca], map: "FK_Crianca_Tarefa_Crianca")
-  @@index([id_tarefa], map: "FK_Crianca_Tarefa_Tarefa")
+  @@index([id_crianca], map: "FK_Crianca_Crianca_Tarefa")
+  @@index([id_tarefa], map: "FK_Tarefa_Crianca_Tarefa")
 }
 
 model tbl_dia_semana {

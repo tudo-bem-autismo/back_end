@@ -6,13 +6,16 @@ exports.post = (req, res, next) => {
 
     const data = req.body;
 
+    const {firebaseUrl} = req.file ? req.file : "";
+
     prisma.tbl_icone.create({
         data:{
-            icone: data.icone,
+            icone: firebaseUrl,
             titulo: data.titulo
         },
         select:{
-            id: true
+            id: true,
+            icone: true
         }
     }).then(
         (icone) => {

@@ -58,8 +58,6 @@ exports.post = (req, res) =>{
 
                 }   
             }
-
-            console.log(error)
         }
     )
 }
@@ -233,8 +231,6 @@ exports.delete = async(req, res, next) =>{
     ).catch(
 
         (error) => {
-
-            console.log(error)
 
             if(error.code == "P2025"){
 
