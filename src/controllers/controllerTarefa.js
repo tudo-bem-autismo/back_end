@@ -4,8 +4,14 @@ const prisma = require('../prismaClient');
 
 exports.post = (req, res, next) => {
 
-    prisma.tbl_tarefa.create({
+    const data = req.body
+
+    prisma.tbl_crianca_tarefa.create({
         data:{
+            id_crianca: parseInt(data.id_crianca),
+            tbl_tarefa:{
+                
+            }
            
         }
     }).then(
