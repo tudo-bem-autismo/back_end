@@ -162,11 +162,15 @@ model tbl_dia_semana {
 
 model tbl_tarefa {
   id                    Int                     @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
-  horario               DateTime                @db.Time(0)
+  horario               String                  @db.VarChar(10)
   titulo                String?                 @db.VarChar(45)
+  id_icone              Int                     @db.UnsignedInt
+  tbl_icone             tbl_icone               @relation(fields: [id_icone], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Icone_Tarefa")
   tbl_crianca_tarefa    tbl_crianca_tarefa[]
   tbl_realizacao_tarefa tbl_realizacao_tarefa[]
   tbl_tarefa_dia_semana tbl_tarefa_dia_semana[]
+
+  @@index([id_icone], map: "FK_Icone_Tarefa")
 }
 
 model tbl_tarefa_dia_semana {
@@ -201,4 +205,11 @@ model tbl_crianca_tarefa {
 
   @@index([id_crianca], map: "FK_Crianca_Crianca_Tarefa")
   @@index([id_tarefa], map: "FK_Tarefa_Crianca_Tarefa")
+}
+
+model tbl_icone {
+  id         Int          @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
+  icone      String       @db.VarChar(300)
+  titulo     String       @db.VarChar(100)
+  tbl_tarefa tbl_tarefa[]
 }
