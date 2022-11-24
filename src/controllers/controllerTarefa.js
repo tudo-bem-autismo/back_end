@@ -5,44 +5,34 @@ const prisma = require('../prismaClient');
 exports.post = async (req, res, next) => {
 
     const data = req.body
-    // console.log(typeof(data.id_crianca.length()))
+    let children = null 
+    let days = null 
     
-    if(typeof(data.id_crianca) == 'object'){
-        console.log(data)
-    }
+    if(typeof(data.id_crianca) == 'object')
+        children = data.id_crianca.map( id => {return {id_crianca: parseInt(id)}})
+    else
+        children = {id_crianca: parseInt(data.id_crianca)}
     
 
-
-
+    if(typeof(data.id_dia_semana) == 'object')
+        days = data.id_dia_semana.map( id => {return {id_dia_semana: parseInt(id)}})
+    else
+        days = {id_dia_semana: parseInt(data.id_dia_semana)}
+    
     prisma.tbl_tarefa.create({
         data: {
             titulo: data.titulo,
             horario: data.horario,
             id_icone: parseInt(data.id_icone),
             tbl_crianca_tarefa: {
-                createMany: {
-                    id_crianca: parseInt(data.id_crianca)
-                }
+                create: children
             },
             tbl_tarefa_dia_semana: {
-                create: {
-                    id_dia_semana: parseInt(data.id_dia_semana)
-                }
+                create: days
             }
-        },
-        select: {
-            id: true
         }
-    }).then(
-        (tarefa) => {
-            res.status(201).json(tarefa);
-        }
-    ).catch(
-        (error) => {
-            console.log(error)
-            res.status(500).json({ "message": error })
-        }
-    )
+    }).then((tarefa) => {res.status(201).json(tarefa);}
+    ).catch((error) => {res.status(500).json({ "message": error })})
 }
 
 exports.get = (req, res) => {
