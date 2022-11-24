@@ -96,3 +96,16 @@ exports.getById = (req, res, next) => {
     }).then((tarefa) => { res.status(201).json(tarefa) }
     ).catch((error) => { console.log(error)})
 }
+
+exports.delete = (req, res) => {
+
+    const id = parseInt(req.params.id);
+    
+    prisma.tbl_tarefa.delete({
+        where:{
+            id: id
+        }
+    }).then(() => res.status(200).json({}))
+    .catch((error) => res.status(500).json({error}))
+
+}
