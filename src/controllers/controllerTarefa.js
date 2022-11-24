@@ -67,30 +67,32 @@ exports.get = async (req, res) => {
 
     }catch(error){
         const e = new Error(error)
-        console.log(e.message)
+        res.status(500).json(e.message)
     }
 }
 
 exports.getById = (req, res, next) => {
 
-    const prisma = require('../prismaClient');
+    const id = parseInt(req.params.id);
 
-    const id = req.params.id;
+   prisma.tbl_tarefa.findUnique({
 
-    prisma.tbl_crianca_tarefa.findUnique({
-        where: {
-            id: parseInt(id)
+        where:{
+            id: id
+        },
+        include:{
+            tbl_crianca_tarefa:{
+                include:{
+                    tbl_crianca:true
+                }
+            },
+            tbl_tarefa_dia_semana:{
+                include:{
+                    tbl_dia_semana:true
+                }
+            },
+            tbl_icone:true
         }
-    }).then(
-        (data) => {
-            res.status(200).send(data);
-        }
-    ).catch(
-        (error) => {
-            const argument = error.message.split('Argument')[1]
-            const err = argument.split('\n')[0]
-
-            res.status(400).json({ "message": err });
-        }
-    );
+    }).then((tarefa) => { res.status(201).json(tarefa) }
+    ).catch((error) => { console.log(error)})
 }

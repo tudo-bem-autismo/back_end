@@ -157,6 +157,7 @@ model tbl_dia_semana {
   id                    Int                     @id @unique(map: "id") @default(autoincrement()) @db.UnsignedInt
   dia                   String                  @db.VarChar(45)
   sigla                 String                  @db.VarChar(3)
+  numero                Int
   tbl_tarefa_dia_semana tbl_tarefa_dia_semana[]
 }
 
