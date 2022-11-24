@@ -94,7 +94,7 @@ exports.getById = (req, res, next) => {
             tbl_icone:true
         }
     }).then((tarefa) => { res.status(201).json(tarefa) }
-    ).catch((error) => { console.log(error)})
+    ).catch((error) => { res.status(500).json({error})})
 }
 
 exports.delete = (req, res) => {
@@ -107,5 +107,58 @@ exports.delete = (req, res) => {
         }
     }).then(() => res.status(200).json({}))
     .catch((error) => res.status(500).json({error}))
+}
 
+exports.put = async (req, res, next) => {
+
+    const data = req.body
+    let children = null
+    let days = null
+
+    if (typeof (data.id_crianca) == 'object'){
+
+        children = data.id_crianca.map(id => { return { id_crianca: parseInt(id) } })
+        // console.log(children)
+    }
+    else{
+
+        children = { id_crianca: parseInt(data.id_crianca) }
+    }
+
+    if (typeof (data.id_dia_semana) == 'object'){
+
+        days = data.id_dia_semana.map(id => { return { id_dia_semana: parseInt(id) } })
+    }
+    else{
+
+        days = { id_dia_semana: parseInt(data.id_dia_semana) }
+    }
+
+    prisma.tbl_tarefa.update({
+        where:{
+            id: parseInt(data.id_tarefa)
+        },
+        data: {
+            titulo: data.titulo,
+            horario: data.horario,
+            id_icone: parseInt(data.id_icone),
+            tbl_crianca_tarefa: {
+                updateMany: {
+                    where:{
+                        id_tarefa: parseInt(data.id_tarefa)
+                    },
+                    data: children
+                }
+            },
+            tbl_tarefa_dia_semana: {
+                updateMany: {
+                    where:{
+                        id_tarefa: parseInt(data.id_tarefa)
+                    },
+                    data: days
+                }
+            },
+        }
+    }).then((tarefa) => { res.status(201).json(tarefa) }
+    ).catch((error) => { console.log(error) })
 }
