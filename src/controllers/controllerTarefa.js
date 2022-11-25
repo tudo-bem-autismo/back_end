@@ -36,11 +36,11 @@ exports.post = async (req, res, next) => {
 
 exports.get = async (req, res) => {
 
-    try{
+    try {
 
         const id = req.params.id
-    
-        const result = await prisma.$queryRaw `select 
+
+        const result = await prisma.$queryRaw`select 
             tbl_tarefa.id as id_tarefa,
             tbl_tarefa.horario,
             tbl_tarefa.titulo,
@@ -65,7 +65,7 @@ exports.get = async (req, res) => {
 
         res.status(200).send(result)
 
-    }catch(error){
+    } catch (error) {
         const e = new Error(error)
         res.status(500).json(e.message)
     }
@@ -75,90 +75,91 @@ exports.getById = (req, res, next) => {
 
     const id = parseInt(req.params.id);
 
-   prisma.tbl_tarefa.findUnique({
+    prisma.tbl_tarefa.findUnique({
 
-        where:{
+        where: {
             id: id
         },
-        include:{
-            tbl_crianca_tarefa:{
-                include:{
-                    tbl_crianca:true
+        include: {
+            tbl_crianca_tarefa: {
+                include: {
+                    tbl_crianca: true
                 }
             },
-            tbl_tarefa_dia_semana:{
-                include:{
-                    tbl_dia_semana:true
+            tbl_tarefa_dia_semana: {
+                include: {
+                    tbl_dia_semana: true
                 }
             },
-            tbl_icone:true
+            tbl_icone: true
         }
     }).then((tarefa) => { res.status(201).json(tarefa) }
-    ).catch((error) => { res.status(500).json({error})})
+    ).catch((error) => { res.status(500).json({ error }) })
 }
 
 exports.delete = (req, res) => {
 
     const id = parseInt(req.params.id);
-    
+
     prisma.tbl_tarefa.delete({
-        where:{
+        where: {
             id: id
         }
     }).then(() => res.status(200).json({}))
-    .catch((error) => res.status(500).json({error}))
+        .catch((error) => res.status(500).json({ error }))
 }
 
 exports.put = async (req, res, next) => {
 
-    const data = req.body
-    let children = null
-    let days = null
+    try {
 
-    if (typeof (data.id_crianca) == 'object'){
+        const data = req.body
+        let children = null
+        let days = null
 
-        children = data.id_crianca.map(id => { return { id_crianca: parseInt(id) } })
-        // console.log(children)
-    }
-    else{
+        if (typeof (data.id_crianca) == 'object')
+            children = data.id_crianca.map(id => { return { id_crianca: parseInt(id) } })
+        else
+            children = { id_crianca: parseInt(data.id_crianca) }
 
-        children = { id_crianca: parseInt(data.id_crianca) }
-    }
+        if (typeof (data.id_dia_semana) == 'object')
+            days = data.id_dia_semana.map(id => { return { id_dia_semana: parseInt(id) } })
+        else
+            days = { id_dia_semana: parseInt(data.id_dia_semana) }
 
-    if (typeof (data.id_dia_semana) == 'object'){
+        
+        await prisma.tbl_crianca_tarefa.deleteMany({
+            where:{
+                id_tarefa: parseInt(data.id_tarefa)
+            }
+        })
 
-        days = data.id_dia_semana.map(id => { return { id_dia_semana: parseInt(id) } })
-    }
-    else{
+        await prisma.tbl_tarefa_dia_semana.deleteMany({
+            where:{
+                id_tarefa: parseInt(data.id_tarefa)
+            }
+        })
 
-        days = { id_dia_semana: parseInt(data.id_dia_semana) }
-    }
-
-    prisma.tbl_tarefa.update({
-        where:{
-            id: parseInt(data.id_tarefa)
-        },
-        data: {
-            titulo: data.titulo,
-            horario: data.horario,
-            id_icone: parseInt(data.id_icone),
-            tbl_crianca_tarefa: {
-                updateMany: {
-                    where:{
-                        id_tarefa: parseInt(data.id_tarefa)
-                    },
-                    data: children
+        await prisma.tbl_tarefa.create({
+            data: {
+                titulo: data.titulo,
+                horario: data.horario,
+                id_icone: parseInt(data.id_icone),
+                tbl_crianca_tarefa: {
+                    create: children
+                },
+                tbl_tarefa_dia_semana: {
+                    create: days
                 }
-            },
-            tbl_tarefa_dia_semana: {
-                updateMany: {
-                    where:{
-                        id_tarefa: parseInt(data.id_tarefa)
-                    },
-                    data: days
-                }
-            },
-        }
-    }).then((tarefa) => { res.status(201).json(tarefa) }
-    ).catch((error) => { console.log(error) })
+            }
+        })
+
+        res.status(200).json({})
+
+    } catch (error) {
+
+        const e = new Error(error)
+        res.status(500).json(e.message)
+
+    }
 }
