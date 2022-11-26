@@ -163,3 +163,34 @@ exports.put = async (req, res, next) => {
 
     }
 }
+
+exports.completeTask = async (req, res, next) => {
+
+    const data = req.body
+
+    prisma.tbl_realizacao_tarefa.create({
+        data:{
+            id_crianca: parseInt(data.id_crianca),
+            id_tarefa: parseInt(data.id_tarefa),
+            data: new Date()
+        }
+    }).then(() => { res.status(201).json() }
+    ).catch((error) => { res.status(500).json({ "message": error }) })
+}
+
+exports.getCompletedTasks = async (req, res, next) => {
+
+    const data = req.body
+    const date = new Date()
+    date.setDate(date.getDate() - parseInt(data.periodo))
+
+    prisma.tbl_realizacao_tarefa.findMany({
+        where:{
+            id_crianca: parseInt(data.id_crianca),
+            data: {
+                gte : date
+            }
+        }
+    }).then((data) => { res.status(200).json(data) }
+    ).catch((error) => { res.status(500).json({ "message": error }) })
+}
