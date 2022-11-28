@@ -5,24 +5,25 @@ const prisma = require('../prismaClient');
 exports.post = (req, res, next) => {
 
     const data = req.body;
+    
+    const icones = data.icones.map((icone) => {
 
-    prisma.tbl_icone.create({
-        data:{
-            icone: data.icone,
-            titulo: data.titulo
-        },
-        select:{
-            id: true
-        }
-    }).then(
-        (icone) => {
-            res.status(201).json(icone);
-        }
-    ).catch(
-        (error) => {
-            res.status(500).json({ "message": error })
-        }
-    )
+        prisma.tbl_icone.createMany({
+            data:{
+                icone: icone.icone,
+                titulo: icone.titulo
+            }
+        }).then(
+            (data) =>{
+                res.status(200).json(data);
+            }
+        ).catch(
+            (error) => {
+                // console.log(error);
+                res.status(500).json({ "message": error });
+            }
+        )
+    }) 
 }
 
 exports.get = (req, res) =>{
