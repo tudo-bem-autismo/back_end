@@ -2,13 +2,10 @@
 
 const express = require('express');
 const router = express.Router();
-
 const firebase = require("../../services/firebase");
-
 const controller = require('../controllers/controllerCrianca');
 
 const multer = require("multer");
-
 const Multer = multer({
     storage: multer.memoryStorage(),
     limits: 5 * 1024 * 1024,
