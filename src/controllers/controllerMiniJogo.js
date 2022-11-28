@@ -17,9 +17,7 @@ exports.post = (req, res, next) => {
 
         data,
         select: {
-
             id: true
-
         }
 
     }).then(
