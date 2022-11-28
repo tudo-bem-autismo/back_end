@@ -29,7 +29,7 @@ exports.post = (req, res, next) => {
             (id) =>{
 
                 idPassoCorreto = id.id
-                console.log(idPassoCorreto)
+                // console.log(idPassoCorreto)
             }
         ).catch(
 
@@ -84,19 +84,5 @@ exports.post = (req, res, next) => {
                 console.log(err)
             }
         )
-        // // const passos = situacao.passos.map((passo) =>{
-
-        // //    if(passo.passo_correto == 1){
-
-        // //         console.log('Certo');
-        // //         idPassoCorreto = true
-        // //         console.log(idPassoCorreto)
-        // //    }else if(passo.passo_correto == 0){
-
-        // //         console.log('Errado');
-        // //         idPassoErrado = true
-        // //         console.log(idPassoErrado)
-        // //    }
-        // }) 
     })
 }
