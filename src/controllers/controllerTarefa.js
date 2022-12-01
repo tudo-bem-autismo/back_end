@@ -40,16 +40,16 @@ exports.get = async (req, res) => {
 
         const id = req.params.id
 
-        const result = await prisma.$queryRaw`select 
-            tbl_tarefa.id as id_tarefa,
+        const result = await prisma.$queryRaw `select 
+            cast(tbl_tarefa.id as float) as id_tarefa,
             tbl_tarefa.horario,
             tbl_tarefa.titulo,
-            tbl_dia_semana.id as id_dia_semana,
+            cast(tbl_dia_semana.id as float) as id_dia_semana,
             tbl_dia_semana.dia,
             tbl_dia_semana.sigla,
             tbl_icone.icone,
             tbl_icone.titulo,
-            (select if(tbl_dia_semana.numero = (dayofWeek(current_timestamp())), 'true', 'false')) as hoje
+            cast((select if(tbl_dia_semana.numero = (dayofWeek(current_timestamp())), true, false)) as float) as hoje
         from tbl_tarefa
             inner join tbl_tarefa_dia_semana
                 on tbl_tarefa.id = tbl_tarefa_dia_semana.id_tarefa
@@ -62,6 +62,8 @@ exports.get = async (req, res) => {
             inner join tbl_crianca
                 on tbl_crianca_tarefa.id_crianca = tbl_crianca.id
         where tbl_crianca.id = ${id};`
+
+        console.log(result)
 
         res.status(200).send(result)
 
