@@ -192,6 +192,21 @@ exports.getCompletedTasks = async (req, res, next) => {
             data: {
                 gte : date
             }
+        },
+        select:{
+            id: true,
+            data:true,
+            tbl_tarefa:{
+                select:{
+                    titulo: true,
+                    tbl_icone:{
+                        select:{
+                            icone:true,
+                            titulo:true
+                        }
+                    }
+                }
+            }
         }
     }).then((data) => { res.status(200).json(data) }
     ).catch((error) => { res.status(500).json({ "message": error }) })
