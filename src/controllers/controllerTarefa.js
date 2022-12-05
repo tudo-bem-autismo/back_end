@@ -40,7 +40,7 @@ exports.get = async (req, res) => {
 
         const id = parseInt(req.params.id)
 
-        const result = await prisma.$queryRaw `select 
+        const result = await prisma.$queryRaw`select 
             cast(tbl_tarefa.id as decimal) as id_tarefa,
             tbl_tarefa.horario,
             tbl_tarefa.titulo,
@@ -62,9 +62,9 @@ exports.get = async (req, res) => {
                 on tbl_tarefa.id = tbl_crianca_tarefa.id_tarefa
             inner join tbl_crianca
                 on tbl_crianca_tarefa.id_crianca = tbl_crianca.id
-            inner join tbl_realizacao_tarefa
+            left join tbl_realizacao_tarefa
                 on tbl_tarefa.id = tbl_realizacao_tarefa.id_tarefa
-        where tbl_crianca.id = ${id};`
+        where tbl_crianca_tarefa.id_crianca = ${id};`
 
         res.status(200).send(result)
 
@@ -142,22 +142,22 @@ exports.put = async (req, res, next) => {
                     create: days
                 }
             },
-            select:{
+            select: {
                 id: true
             }
         })
 
         await prisma.tbl_realizacao_tarefa.updateMany({
-            where:{
+            where: {
                 id_tarefa: parseInt(data.id_tarefa)
             },
-            data:{
+            data: {
                 id_tarefa: id.id
             }
         })
 
         await prisma.tbl_tarefa.delete({
-            where:{
+            where: {
                 id: parseInt(data.id_tarefa)
             }
         })
@@ -178,7 +178,7 @@ exports.completeTask = async (req, res, next) => {
     const data = req.body
 
     prisma.tbl_realizacao_tarefa.create({
-        data:{
+        data: {
             id_crianca: parseInt(data.id_crianca),
             id_tarefa: parseInt(data.id_tarefa),
             data: new Date()
@@ -194,22 +194,22 @@ exports.getCompletedTasks = async (req, res, next) => {
     date.setDate(date.getDate() - parseInt(data.periodo))
 
     prisma.tbl_realizacao_tarefa.findMany({
-        where:{
+        where: {
             id_crianca: parseInt(data.id_crianca),
             data: {
-                gte : date
+                gte: date
             }
         },
-        select:{
+        select: {
             id: true,
-            data:true,
-            tbl_tarefa:{
-                select:{
+            data: true,
+            tbl_tarefa: {
+                select: {
                     titulo: true,
-                    tbl_icone:{
-                        select:{
-                            icone:true,
-                            titulo:true
+                    tbl_icone: {
+                        select: {
+                            icone: true,
+                            titulo: true
                         }
                     }
                 }
