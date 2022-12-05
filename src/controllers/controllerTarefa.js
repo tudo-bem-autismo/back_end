@@ -63,7 +63,7 @@ exports.get = async (req, res) => {
             on tbl_crianca_tarefa.id_crianca = tbl_crianca.id
     where tbl_crianca.id = ${id};`
 
-        // console.log(result)
+        console.log(result)
 
         res.status(200).send(result)
 
@@ -129,20 +129,7 @@ exports.put = async (req, res, next) => {
         else
             days = { id_dia_semana: parseInt(data.id_dia_semana) }
 
-        
-        await prisma.tbl_crianca_tarefa.deleteMany({
-            where:{
-                id_tarefa: parseInt(data.id_tarefa)
-            }
-        })
-
-        await prisma.tbl_tarefa_dia_semana.deleteMany({
-            where:{
-                id_tarefa: parseInt(data.id_tarefa)
-            }
-        })
-
-        await prisma.tbl_tarefa.create({
+        const id = await prisma.tbl_tarefa.create({
             data: {
                 titulo: data.titulo,
                 horario: data.horario,
@@ -153,6 +140,24 @@ exports.put = async (req, res, next) => {
                 tbl_tarefa_dia_semana: {
                     create: days
                 }
+            },
+            select:{
+                id: true
+            }
+        })
+
+        await prisma.tbl_realizacao_tarefa.updateMany({
+            where:{
+                id_tarefa: parseInt(data.id_tarefa)
+            },
+            data:{
+                id_tarefa: id.id
+            }
+        })
+
+        await prisma.tbl_tarefa.delete({
+            where:{
+                id: parseInt(data.id_tarefa)
             }
         })
 
@@ -161,6 +166,7 @@ exports.put = async (req, res, next) => {
     } catch (error) {
 
         const e = new Error(error)
+        console.log(e.message)
         res.status(500).json(e.message)
 
     }
