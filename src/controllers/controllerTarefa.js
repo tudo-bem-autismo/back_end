@@ -41,29 +41,30 @@ exports.get = async (req, res) => {
         const id = parseInt(req.params.id)
 
         const result = await prisma.$queryRaw `select 
-        cast(tbl_tarefa.id as decimal) as id_tarefa,
-        tbl_tarefa.horario,
-        tbl_tarefa.titulo,
-        cast(tbl_dia_semana.id as decimal) as id_dia_semana,
-        tbl_dia_semana.dia,
-        tbl_dia_semana.sigla,
-        tbl_icone.icone,
-        tbl_icone.titulo as titulo_icone,
-        cast((select if(tbl_dia_semana.numero = dayofWeek(current_timestamp()), true, false)) as decimal) as hoje
-    from tbl_tarefa
-        inner join tbl_tarefa_dia_semana
-            on tbl_tarefa.id = tbl_tarefa_dia_semana.id_tarefa
-        inner join tbl_dia_semana
-            on tbl_tarefa_dia_semana.id_dia_semana = tbl_dia_semana.id
-        inner join tbl_icone
-            on tbl_tarefa.id_icone = tbl_icone.id
-        inner join tbl_crianca_tarefa
-            on tbl_tarefa.id = tbl_crianca_tarefa.id_tarefa
-        inner join tbl_crianca
-            on tbl_crianca_tarefa.id_crianca = tbl_crianca.id
-    where tbl_crianca.id = ${id};`
-
-        console.log(result)
+            cast(tbl_tarefa.id as decimal) as id_tarefa,
+            tbl_tarefa.horario,
+            tbl_tarefa.titulo,
+            cast(tbl_dia_semana.id as decimal) as id_dia_semana,
+            tbl_dia_semana.dia,
+            tbl_dia_semana.sigla,
+            tbl_icone.icone,
+            tbl_icone.titulo as titulo_icone,
+            cast((select if(tbl_dia_semana.numero = dayofWeek(current_timestamp()), true, false)) as decimal) as hoje,
+            cast((select if(date(tbl_realizacao_tarefa.data) = current_date() and hoje = 1, true, false))as decimal) as realizada
+        from tbl_tarefa
+            inner join tbl_tarefa_dia_semana
+                on tbl_tarefa.id = tbl_tarefa_dia_semana.id_tarefa
+            inner join tbl_dia_semana
+                on tbl_tarefa_dia_semana.id_dia_semana = tbl_dia_semana.id
+            inner join tbl_icone
+                on tbl_tarefa.id_icone = tbl_icone.id
+            inner join tbl_crianca_tarefa
+                on tbl_tarefa.id = tbl_crianca_tarefa.id_tarefa
+            inner join tbl_crianca
+                on tbl_crianca_tarefa.id_crianca = tbl_crianca.id
+            inner join tbl_realizacao_tarefa
+                on tbl_tarefa.id = tbl_realizacao_tarefa.id_tarefa
+        where tbl_crianca.id = ${id};`
 
         res.status(200).send(result)
 
