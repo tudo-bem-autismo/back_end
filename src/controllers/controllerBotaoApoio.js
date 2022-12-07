@@ -29,12 +29,12 @@ exports.post = async (req, res) => {
                 return {
                     id_crianca: id,
                     midia: upload.link,
-                    nome_original: upload.originalname,
+                    // nome_original: upload.originalname,
                     id_tipo_midia: parseInt(type.id)
                 }
             }
         )
-        console.log(media)
+        // console.log(media)
 
         prisma.tbl_botao_apoio.createMany({
 
@@ -42,6 +42,8 @@ exports.post = async (req, res) => {
         })
             .then(() => { res.status(201).json() })
             .catch((error) => {
+
+                console.log(error, `-----------then`)
 
                 if (error.code == 'P2003') {
 
@@ -70,6 +72,8 @@ exports.post = async (req, res) => {
             })
 
     } catch (error) {
+
+        console.log(error, `-----------try`)
 
         const e = new Error(error)
         console.log(e)

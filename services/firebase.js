@@ -102,7 +102,7 @@ exports.uploadFiles =  (fileToUpload) => {
 
     const uploadedFile = {
         link: `https://storage.googleapis.com/${BUCKET}/${fileName}`,
-        originalname: fileToUpload.originalname,
+        // originalname: fileToUpload.originalname,
         mimetype: fileToUpload.mimetype.split('/')[0]
     }   
 
