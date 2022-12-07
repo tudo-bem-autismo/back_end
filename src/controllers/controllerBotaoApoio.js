@@ -130,7 +130,7 @@ exports.get = async (req, res) => {
         select:{
             id:true,
             midia:true,
-            nome_original:true,
+            // nome_original:true,
             tbl_tipo_midia:{
                 select:{
                     tipo:true
@@ -140,6 +140,8 @@ exports.get = async (req, res) => {
     })
         .then((data) => res.status(200).json(data))
         .catch((error) => {
+
+            console.log(error)
 
 
             const argument = error.message.split('Argument')[1]
